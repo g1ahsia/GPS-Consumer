@@ -128,7 +128,8 @@ class StoreViewController: UIViewController, WKNavigationDelegate, WKUIDelegate 
                 self.nameView.text = store.name
                 self.descView.text = store.description
                 self.mainImageView.image = #imageLiteral(resourceName: "logo_gps_horizontal")
-                self.mainImageView.downloaded(from: store.imageUrl!) {
+                let myGroup = DispatchGroup()
+                self.mainImageView.downloaded(from: store.imageUrl!, group: myGroup) {
                 }
                 if ((store.address) != nil) {
                     self.address = "藥局地址：" +  store.address!

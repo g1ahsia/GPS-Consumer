@@ -15,6 +15,7 @@ class MessageCell: UITableViewCell {
     var sender : String?
     var message : String?
     var date : String?
+    var attachments = [String]()
     var attachedImages = [UIImage]()
     weak var viewController : UIViewController?
     

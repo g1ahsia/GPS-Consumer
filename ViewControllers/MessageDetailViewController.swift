@@ -89,9 +89,10 @@ extension MessageDetailViewController: UITableViewDelegate, UITableViewDataSourc
             cell.sender = messages[indexPath.row].sender
             cell.message = messages[indexPath.row].message
             cell.date = messages[indexPath.row].date
-            if let image = tempImage {
-                cell.attachedImages = [image, #imageLiteral(resourceName: "001246")]
-            }
+//            cell.attachments = messages[indexPath.row].attachments
+//            if let image = tempImage {
+            cell.attachedImages = [#imageLiteral(resourceName: "001246"), #imageLiteral(resourceName: "001246"), #imageLiteral(resourceName: "001246"), #imageLiteral(resourceName: "001246")]
+//            }
             cell.layoutSubviews()
         }
         else {

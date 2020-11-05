@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-//import FBSDKLoginKit
+import FBSDKLoginKit
 
 
 class MissionDetailViewController: UIViewController {
@@ -101,39 +101,39 @@ class MissionDetailViewController: UIViewController {
 
         setupLayout()
         
-//        let loginButton = FBLoginButton()
-//        loginButton.center = view.center
-//        loginButton.permissions = ["public_profile", "email"]
-//        view.addSubview(loginButton)
+        let loginButton = FBLoginButton()
+        loginButton.center = view.center
+        loginButton.permissions = ["public_profile", "email"]
+        view.addSubview(loginButton)
 
-//        if let token = AccessToken.current,
-//            !token.isExpired {
-//            // User is logged in, do work such as go to next view controller.
-//
-//            if (AccessToken.current?.hasGranted(permission: "user_likes") != nil) {
-//                let graphRequest = GraphRequest(graphPath: "me/likes", parameters: ["fields":"id"])
-//                let connection = GraphRequestConnection()
-//                connection.add(graphRequest, completionHandler: { (connection, result, error) in
-//
-//                    if error != nil {
-//
-//                        //do something with error
-//                        print("error is", error!)
-//                    }
-//                    if let result = result as? [String : Any],
-//                        let pages = result["data"] as? [[String : String]] {
-//                        self.pageIDs.append(contentsOf: pages)
-//                        if let paging = result["paging"] as? [String : Any],
-//                            let next = paging["next"] as? String {
-//                            print("next paging ", next)
-//                            self.fetchMorePages(urlString: next)
-//                        }
-//                    }
-//
-//                })
-//                connection.start()
-//            }
-//        }
+        if let token = AccessToken.current,
+            !token.isExpired {
+            // User is logged in, do work such as go to next view controller.
+
+            if (AccessToken.current?.hasGranted(permission: "user_likes") != nil) {
+                let graphRequest = GraphRequest(graphPath: "me/likes", parameters: ["fields":"id"])
+                let connection = GraphRequestConnection()
+                connection.add(graphRequest, completionHandler: { (connection, result, error) in
+
+                    if error != nil {
+
+                        //do something with error
+                        print("error is", error!)
+                    }
+                    if let result = result as? [String : Any],
+                        let pages = result["data"] as? [[String : String]] {
+                        self.pageIDs.append(contentsOf: pages)
+                        if let paging = result["paging"] as? [String : Any],
+                            let next = paging["next"] as? String {
+                            print("next paging ", next)
+                            self.fetchMorePages(urlString: next)
+                        }
+                    }
+
+                })
+                connection.start()
+            }
+        }
     }
     
     private func setupLayout() {
@@ -187,132 +187,131 @@ class MissionDetailViewController: UIViewController {
     
     @objc private func completeButtonTapped(sender: UIButton!) {
         
-//        self.pageIDs = [[String : String]]()
-//        if let token = AccessToken.current,
-//            !token.isExpired {
-//            // User is logged in, do work such as go to next view controller.
-//            getLikes()
-//
-//        }
-//        else {
-//
-//            
-//            let login = LoginManager()
-//            login.logIn(permissions: ["public_profile", "email"], from: self) { (result, error) in
-//                if error != nil {
-//                    return
-//                }
-//                //make sure we have a result, otherwise abort
-//                guard let result = result else { return }
-//                //if cancelled nothing todo
-//                if result.isCancelled { return }
-//                else {
-//                    
-//                    self.getLikes()
-//                }
-//            }
-//        }
+        self.pageIDs = [[String : String]]()
+        if let token = AccessToken.current,
+            !token.isExpired {
+            // User is logged in, do work such as go to next view controller.
+            getLikes()
+
+        }
+        else {
+
+            
+            let login = LoginManager()
+            login.logIn(permissions: ["public_profile", "email"], from: self) { (result, error) in
+                if error != nil {
+                    return
+                }
+                //make sure we have a result, otherwise abort
+                guard let result = result else { return }
+                //if cancelled nothing todo
+                if result.isCancelled { return }
+                else {
+                    
+                    self.getLikes()
+                }
+            }
+        }
 
     }
     
-//    private func getLikes() {
-//        if (AccessToken.current?.hasGranted(permission: "user_likes") != nil) {
-//            let graphRequest = GraphRequest(graphPath: "me/likes", parameters: ["fields":"id"])
-//            let connection = GraphRequestConnection()
-//            connection.add(graphRequest, completionHandler: { (connection, result, error) in
-//
-//                if error != nil {
-//
-//                    //do something with error
-//                    print("error is", error!)
-//                }
-//                if let result = result as? [String : Any],
-//                    let pages = result["data"] as? [[String : String]] {
-//                    self.pageIDs.append(contentsOf: pages)
-//                    if let paging = result["paging"] as? [String : Any],
-//                        let next = paging["next"] as? String {
-//                        print("next paging ", next)
-//                        self.fetchMorePages(urlString: next)
-//                    }
-//                }
-//
-//            })
-//            connection.start()
-//        }
-//    }
+    private func getLikes() {
+        if (AccessToken.current?.hasGranted(permission: "user_likes") != nil) {
+            let graphRequest = GraphRequest(graphPath: "me/likes", parameters: ["fields":"id"])
+            let connection = GraphRequestConnection()
+            connection.add(graphRequest, completionHandler: { (connection, result, error) in
+
+                if error != nil {
+
+                    //do something with error
+                    print("error is", error!)
+                }
+                if let result = result as? [String : Any],
+                    let pages = result["data"] as? [[String : String]] {
+                    self.pageIDs.append(contentsOf: pages)
+                    if let paging = result["paging"] as? [String : Any],
+                        let next = paging["next"] as? String {
+                        print("next paging ", next)
+                        self.fetchMorePages(urlString: next)
+                    }
+                }
+
+            })
+            connection.start()
+        }
+    }
     
-//    func fetchMorePages(urlString : String) {
-//        let url = URL(string: urlString)!
-//        var request = URLRequest(url: url)
-//
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.addValue("application/json", forHTTPHeaderField: "Accept")
-//        request.httpMethod = "GET"
-//        let task = URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
-//            var store = Store.init(id: 0, code: "", name: "", latitude: 0, longitude: 0)
-//            if let error = error {
-//                print("Error with fetching store: \(error)")
-//                return
-//            }
-//
-//            guard let httpResponse = response as? HTTPURLResponse,
-//                  (200...299).contains(httpResponse.statusCode) else {
-//                    print("Error with the response, unexpected status code: \(String(describing: response))")
-//              return
-//            }
-//
-//            if let data = data,
-//                let result = try? JSONSerialization.jsonObject(with: data, options: []) {
-//                if let result = result as? [String : Any],
-//                    let pages = result["data"] as? [[String : String]] {
-//                    self.pageIDs.append(contentsOf: pages)
-//                    if let paging = result["paging"] as? [String : Any],
-//                        let next = paging["next"] as? String {
-//                        print("next paging ", next)
-//                        self.fetchMorePages(urlString: next)
-//                    }
-//                    else {
-//                        print("got all pages here\(self.pageIDs.count)")
-//                        self.checkGPSLike()
-//                    }
-//                }
-//
-//            }
-//        })
-//        task.resume()
-//    }
+    func fetchMorePages(urlString : String) {
+        let url = URL(string: urlString)!
+        var request = URLRequest(url: url)
+
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpMethod = "GET"
+        let task = URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
+            var store = Store.init(id: 0, code: "", name: "", latitude: 0, longitude: 0)
+            if let error = error {
+                print("Error with fetching store: \(error)")
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                    print("Error with the response, unexpected status code: \(String(describing: response))")
+              return
+            }
+
+            if let data = data,
+                let result = try? JSONSerialization.jsonObject(with: data, options: []) {
+                if let result = result as? [String : Any],
+                    let pages = result["data"] as? [[String : String]] {
+                    self.pageIDs.append(contentsOf: pages)
+                    if let paging = result["paging"] as? [String : Any],
+                        let next = paging["next"] as? String {
+                        print("next paging ", next)
+                        self.fetchMorePages(urlString: next)
+                    }
+                    else {
+                        print("got all pages here\(self.pageIDs.count)")
+                        self.checkGPSLike()
+                    }
+                }
+            }
+        })
+        task.resume()
+    }
     
-//    func checkGPSLike() {
-//        for dict in self.pageIDs {
-//            if (dict["id"] == "262951807595060") {
-//                print("liked page")
-//                return
-//            }
-//        }
-//        print("didn't like page")
-////        goToFBPage()
-//        DispatchQueue.main.async {
-//            GlobalVariables.showAlert(title: MSG_TITLE_FB, message: LIKE_FACEBOOK_PAGE, vc: self)
-//        }
-//
-//    }
+    func checkGPSLike() {
+        for dict in self.pageIDs {
+            if (dict["id"] == "262951807595060") {
+                print("liked page")
+                return
+            }
+        }
+        print("didn't like page")
+//        goToFBPage()
+        DispatchQueue.main.async {
+            GlobalVariables.showAlert(title: MSG_TITLE_FB, message: LIKE_FACEBOOK_PAGE, vc: self)
+        }
+
+    }
     
-//    private func goToFBPage() {
-//        
-//        guard let facebookURL = NSURL(string: "fb://page/?id=your_page_numeric_id") else {
-//            return
-//        }
-//
-//        if (UIApplication.shared.canOpenURL(facebookURL as URL)) {
-//            UIApplication.shared.openURL(facebookURL as URL)
-//        } else {
-//
-//            guard let webpageURL = NSURL(string: "http://facebook.com/262951807595060/") else {
-//                return
-//            }
-//
-//            UIApplication.shared.openURL(webpageURL as URL)
-//        }
-//
-//    }
+    private func goToFBPage() {
+        
+        guard let facebookURL = NSURL(string: "fb://page/?id=your_page_numeric_id") else {
+            return
+        }
+
+        if (UIApplication.shared.canOpenURL(facebookURL as URL)) {
+            UIApplication.shared.openURL(facebookURL as URL)
+        } else {
+
+            guard let webpageURL = NSURL(string: "http://facebook.com/262951807595060/") else {
+                return
+            }
+
+            UIApplication.shared.openURL(webpageURL as URL)
+        }
+
+    }
 }

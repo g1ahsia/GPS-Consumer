@@ -22,7 +22,6 @@ class ViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.presentLoginVC(notification:)), name: Notification.Name("Logout"), object: nil)
 
-        
         let userDefaults = UserDefaults.standard
 
         // Read/Get Value

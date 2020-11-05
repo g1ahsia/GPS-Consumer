@@ -16,6 +16,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     var consumer : Consumer?
     var threadId : Int?
     var thread = Thread.init(id: 0, type: 0, isRead: false, sender: "", message: "", updatedDate: "")
+    var attachedImages = [UIImage]()
     
     @IBOutlet weak var composeViewBottomConstraint: NSLayoutConstraint!
     let imagePicker = UIImagePickerController()
@@ -303,9 +304,26 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     @objc private func sendButtonTapped(sender: UIButton!) {
         print("sending message")
         sender.isEnabled = false
+        let myGroup = DispatchGroup()
+        
+        if (attachedImages.count > 0) {
+            for image in attachedImages {
+                myGroup.enter()
+                uploadImage(withImage: image, group: myGroup)
+            }
+            myGroup.notify(queue: .main) {
+                print("Finished all requests.")
+                self.sendMessage()
+            }            //
+        }
+        else {
+            self.sendMessage()
+        }
+    }
+    private func sendMessage() {
         if (messageType == MessageType.New ||
             messageType == MessageType.Prescription) {
-            NetworkManager.createThread(typeId: thread.type, message: thread.message, attachments: []) { (result) in
+            NetworkManager.createThread(typeId: thread.type, message: thread.message, attachments:ATTACHMENTS) { (result) in
                 print(result)
                 if (result["status"] as! Int == 1) {
                     NotificationCenter.default.post(name: Notification.Name("CreatedThread"), object: nil)
@@ -320,7 +338,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         }
         else {
             if (self.role == Role.Consumer) {
-                NetworkManager.addMessage(threadId: thread.id, message: thread.message, attachments: []) { (result) in
+                NetworkManager.addMessage(threadId: thread.id, message: thread.message, attachments: ATTACHMENTS) { (result) in
                     print(result)
                     if (result["status"] as! Int == 1) {
                         NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
@@ -333,7 +351,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                 }
             }
             else {
-                NetworkManager.addStoreMessage(threadId: thread.id, message: thread.message, attachments: []) { (result) in
+                NetworkManager.addStoreMessage(threadId: thread.id, message: thread.message, attachments: ATTACHMENTS) { (result) in
                     print(result)
                     if (result["status"] as! Int == 1) {
                         NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
@@ -346,7 +364,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                 }
             }
         }
-
     }
     
     @objc private func typeSelectionButtonTapped(sender: UIButton!) {
@@ -596,12 +613,13 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     }
     
     @objc func addImageToView(image:UIImage){
+        attachedImages.append(image)
+
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isUserInteractionEnabled = true
         imageView.image = image
-        
         
         let delete = UIButton()
         delete.translatesAutoresizingMaskIntoConstraints = false

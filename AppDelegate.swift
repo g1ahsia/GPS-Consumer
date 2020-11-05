@@ -7,8 +7,8 @@
 //
 
 import UIKit
-//import FBSDKCoreKit
-//import AWSS3 // 1
+import FBSDKCoreKit
+import AWSS3 // 1
 
 
 @UIApplicationMain
@@ -18,10 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-//        ApplicationDelegate.shared.application(
-//            application,
-//            didFinishLaunchingWithOptions: launchOptions
-//        )
+        ApplicationDelegate.shared.application(
+            application,
+            didFinishLaunchingWithOptions: launchOptions
+        )
 
         return true
     }
@@ -42,15 +42,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-//    func initializeS3() {
-//            let poolId = "***** your poolId *****"
-//            let credentialsProvider = AWSCognitoCredentialsProvider(
-//                regionType: .APSouth1, //other regionType according to your location.
-//                identityPoolId: poolId
-//            )
-//            let configuration = AWSServiceConfiguration(region: .APSouth1, credentialsProvider: credentialsProvider)
-//            AWSServiceManager.default().defaultServiceConfiguration = configuration
-//        }
+    func initializeS3() {
+//        let poolId = "***** your poolId *****"
+//        let credentialsProvider = AWSCognitoCredentialsProvider(
+//            regionType: .APSouth1, //other regionType according to your location.
+//            identityPoolId: poolId
+//        )
+//        let configuration = AWSServiceConfiguration(region: .APSouth1, credentialsProvider: credentialsProvider)
+//        AWSServiceManager.default().defaultServiceConfiguration = configuration
+        
+        let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.USEast1,
+           identityPoolId:"us-east-1:e3af7739-ebba-4409-a4d6-8c03ee72d398")
+
+        let configuration = AWSServiceConfiguration(region:.USEast1, credentialsProvider:credentialsProvider)
+
+        AWSServiceManager.default().defaultServiceConfiguration = configuration
+
+    }
 
 
 }
