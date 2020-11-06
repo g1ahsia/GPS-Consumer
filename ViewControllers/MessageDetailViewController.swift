@@ -15,6 +15,7 @@ class MessageDetailViewController: UIViewController {
     var messages = [Message]()
     var tempImage : UIImage?
     var threadId : Int = 0
+    var cachedImages = [UIImage]()
     
 //    let navigationBar: UINavigationBar = UINavigationBar(frame: CGRect(x: 0, y: 22, width: UIScreen.main.bounds.width, height: 44))
     
@@ -68,6 +69,28 @@ class MessageDetailViewController: UIViewController {
         consumerDetailVC.id = 1
         self.navigationController?.pushViewController(consumerDetailVC, animated: true)
     }
+    
+    func loadImage(_ url: URL, indexPath: IndexPath) {
+        let downloadTask:URLSessionDownloadTask =
+            URLSession.shared.downloadTask(with: url, completionHandler: {
+            (location: URL?, response: URLResponse?, error: Error?) -> Void in
+            if let location = location {
+                if let data:Data = try? Data(contentsOf: location) {
+                    if let image:UIImage = UIImage(data: data) {
+                        self.cachedImages[indexPath.row] = image // Save into the cache
+                        DispatchQueue.main.async(execute: { () -> Void in
+                            self.messageDetailTableView.beginUpdates()
+                            self.messageDetailTableView.reloadRows(
+                                at: [indexPath],
+                                with: .fade)
+                            self.messageDetailTableView.endUpdates()
+                        })
+                    }
+                }
+            }
+        })
+        downloadTask.resume()
+    }
 
 }
 
@@ -85,28 +108,18 @@ extension MessageDetailViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "message", for: indexPath) as! MessageCell
         cell.viewController = self
-        if (indexPath.row == 0) {
+//        if (indexPath.row == 0) {
             cell.sender = messages[indexPath.row].sender
             cell.message = messages[indexPath.row].message
             cell.date = messages[indexPath.row].date
 //            cell.attachments = messages[indexPath.row].attachments
-//            if let image = tempImage {
-            cell.attachedImages = [#imageLiteral(resourceName: "001246"), #imageLiteral(resourceName: "001246"), #imageLiteral(resourceName: "001246"), #imageLiteral(resourceName: "001246")]
-//            }
-            cell.layoutSubviews()
-        }
-        else {
-            cell.sender = messages[indexPath.row].sender
-            cell.message = messages[indexPath.row].message
-            cell.date = messages[indexPath.row].date
-            cell.layoutSubviews()
-        }
-//
-//        else if (indexPath.row < 6) {
-//            cell.sender = "松仁藥局"
-//            cell.message = "沒有"
-//            cell.date = "2020/04/22 15:35"
-//            cell.attachedImages = [#imageLiteral(resourceName: "prescription"), #imageLiteral(resourceName: "item-1")]
+//        cell.attachedImages = self.cachedImages
+//            cell.layoutSubviews()
+//        }
+//        else {
+//            cell.sender = messages[indexPath.row].sender
+//            cell.message = messages[indexPath.row].message
+//            cell.date = messages[indexPath.row].date
 //            cell.layoutSubviews()
 //        }
         return cell
@@ -156,7 +169,7 @@ extension MessageDetailViewController: UITableViewDelegate, UITableViewDataSourc
 
     @objc private func replyButtonTapped(sender: UIButton!) {
         let messageComposeVC = MessageComposeViewController()
-        messageComposeVC.messageType = MessageType.Reply
+        messageComposeVC.messageType = MessageType.ReplyMessage
         messageComposeVC.threadId = threadId
 //        messageComposeVC.role = Role.MemberStore
         messageComposeVC.role = self.role

@@ -10,7 +10,6 @@ import Foundation
 import UIKit
 
 class MessageComposeViewController: UIViewController, UITextViewDelegate {
-    
     var messageType : MessageType?
     var role : Role?
     var consumer : Consumer?
@@ -314,7 +313,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
             myGroup.notify(queue: .main) {
                 print("Finished all requests.")
                 self.sendMessage()
-            }            //
+            }       
         }
         else {
             self.sendMessage()
@@ -351,16 +350,32 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                 }
             }
             else {
-                NetworkManager.addStoreMessage(threadId: thread.id, message: thread.message, attachments: ATTACHMENTS) { (result) in
-                    print(result)
-                    if (result["status"] as! Int == 1) {
-                        NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
-                        DispatchQueue.main.async {
-                            self.send.isEnabled = true
-                            self.dismiss(animated: true) {
+                if (self.messageType == MessageType.ReplyMessage) {
+                    NetworkManager.addStoreMessage(threadId: thread.id, message: thread.message, attachments: ATTACHMENTS) { (result) in
+                        print(result)
+                        if (result["status"] as! Int == 1) {
+                            NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
+                            DispatchQueue.main.async {
+                                self.send.isEnabled = true
+                                self.dismiss(animated: true) {
+                                }
                             }
                         }
                     }
+                }
+                else {
+                    NetworkManager.addRequestMessage(threadId: thread.id, message: thread.message, attachments: ATTACHMENTS) { (result) in
+                        print(result)
+                        if (result["status"] as! Int == 1) {
+                            NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
+                            DispatchQueue.main.async {
+                                self.send.isEnabled = true
+                                self.dismiss(animated: true) {
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -433,12 +448,18 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                     }
                 }
                 break
-            case MessageType.Reply:
+            case MessageType.ReplyMessage:
+                header.text = "回覆訊息"
+                typeLabel.isHidden = true
+                typeSelection.isHidden = true
+                break
+            case MessageType.ReplyRequest:
                 header.text = "回覆訊息"
                 typeLabel.isHidden = true
                 typeSelection.isHidden = true
                 break
             }
+
         }
         typeLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         typeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 139).isActive = true
@@ -705,8 +726,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                 send.isEnabled = false
             }
             else {
-                if (messageType == MessageType.Reply ||
-                    (consumer) != nil) {
+                if (messageType == MessageType.ReplyMessage ||
+                    messageType ==  MessageType.ReplyRequest ||
+                        (consumer) != nil) {
                     send.alpha = 1.0
                     send.isEnabled = true
                 }
