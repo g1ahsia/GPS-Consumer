@@ -87,7 +87,7 @@ class ThreadCell: UITableViewCell {
     override func layoutSubviews() {
         super .layoutSubviews()
         if let type = type {
-            subjectLabel.text = MESSAGE_SUBJECTS[type]
+            subjectLabel.text = MESSAGE_SUBJECTS[type-1]
         }
         if let role = role {
             if (role == Role.Consumer) {

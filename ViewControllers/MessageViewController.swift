@@ -102,7 +102,8 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "thread", for: indexPath) as! ThreadCell
         cell.sender = threads[indexPath.row].sender
-        cell.type = threads[indexPath.row].type
+//        cell.type = threads[indexPath.row].type
+        cell.type = 1
         cell.message = threads[indexPath.row].message
         cell.updatedDate = threads[indexPath.row].updatedDate
         cell.isRead = threads[indexPath.row].isRead
@@ -120,13 +121,16 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
         messageDetailVC.title = MESSAGE_SUBJECTS[threads[indexPath.row].type]
         messageDetailVC.role = self.role
         if (role == Role.Consumer) {
-            NetworkManager.fetchMessages(id: threads[indexPath.row].id) { (messages) in
-                messageDetailVC.messages = messages
-                messageDetailVC.threadId = self.threads[indexPath.row].id
-                DispatchQueue.main.async {
-                    self.navigationController?.pushViewController(messageDetailVC, animated: true)
-                }
-            }
+//            NetworkManager.fetchMessages(id: threads[indexPath.row].id) { (messages) in
+//                messageDetailVC.messages = messages
+//                messageDetailVC.threadId = self.threads[indexPath.row].id
+//                DispatchQueue.main.async {
+//                    self.navigationController?.pushViewController(messageDetailVC, animated: true)
+//                }
+//            }
+            messageDetailVC.threadId = self.threads[indexPath.row].id
+            messageDetailVC.reloadData()
+            self.navigationController?.pushViewController(messageDetailVC, animated: true)
         }
         else {
             NetworkManager.fetchStoreMessages(id: threads[indexPath.row].id) { (messages) in

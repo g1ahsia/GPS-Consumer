@@ -302,6 +302,10 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
 
     @objc private func sendButtonTapped(sender: UIButton!) {
         print("sending message")
+        ATTACHMENTS = []
+        for imageView in attachedImageViews {
+            attachedImages.append(imageView.image!)
+        }
         sender.isEnabled = false
         let myGroup = DispatchGroup()
         
@@ -322,17 +326,34 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     private func sendMessage() {
         if (messageType == MessageType.New ||
             messageType == MessageType.Prescription) {
-            NetworkManager.createThread(typeId: thread.type, message: thread.message, attachments:ATTACHMENTS) { (result) in
-                print(result)
-                if (result["status"] as! Int == 1) {
-                    NotificationCenter.default.post(name: Notification.Name("CreatedThread"), object: nil)
-                    DispatchQueue.main.async {
-                        self.send.isEnabled = true
-                        self.dismiss(animated: true) {
+            if (self.role == Role.Consumer) {
+                NetworkManager.createThread(typeId: thread.type, message: thread.message, attachments:ATTACHMENTS) { (result) in
+                    print(result)
+                    if (result["status"] as! Int == 1) {
+                        NotificationCenter.default.post(name: Notification.Name("CreatedThread"), object: nil)
+                        DispatchQueue.main.async {
+                            self.send.isEnabled = true
+                            self.dismiss(animated: true) {
 
+                            }
                         }
                     }
                 }
+            }
+            else {
+                NetworkManager.createStoreThread(typeId: 3, consumerId: self.consumer!.id, message: thread.message, attachments:ATTACHMENTS) { (result) in
+                    print(result)
+                    if (result["status"] as! Int == 1) {
+                        NotificationCenter.default.post(name: Notification.Name("CreatedThread"), object: nil)
+                        DispatchQueue.main.async {
+                            self.send.isEnabled = true
+                            self.dismiss(animated: true) {
+
+                            }
+                        }
+                    }
+                }
+
             }
         }
         else {
@@ -367,7 +388,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                     NetworkManager.addRequestMessage(threadId: thread.id, message: thread.message, attachments: ATTACHMENTS) { (result) in
                         print(result)
                         if (result["status"] as! Int == 1) {
-                            NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
+                            NotificationCenter.default.post(name: Notification.Name("AddedRequestMessage"), object: nil)
                             DispatchQueue.main.async {
                                 self.send.isEnabled = true
                                 self.dismiss(animated: true) {
@@ -634,8 +655,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     }
     
     @objc func addImageToView(image:UIImage){
-        attachedImages.append(image)
-
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false

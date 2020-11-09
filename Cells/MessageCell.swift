@@ -18,10 +18,9 @@ class MessageCell: UITableViewCell {
     var attachments = [String]()
     var attachedImages = [UIImage]()
     weak var viewController : UIViewController?
+    var bottomConstraint: NSLayoutConstraint?
+
     
-//    var textHeightConstraint: NSLayoutConstraint!
-
-
     var senderLabel : UILabel = {
         var textLabel = UILabel()
         textLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -88,6 +87,8 @@ class MessageCell: UITableViewCell {
             imageView.removeFromSuperview()
         }
 
+        bottomConstraint?.isActive = false
+        
         if attachedImages.count > 0 {
             attachmentImageViews.removeAll()
             for attachedImage in attachedImages {
@@ -114,12 +115,16 @@ class MessageCell: UITableViewCell {
                 attachmentImageViews[index].heightAnchor.constraint(equalTo: attachmentImageViews[index].widthAnchor, multiplier: (attachmentImageViews[index].image?.size.height)!/(attachmentImageViews[index].image?.size.width)!).isActive = true
 
                 if (index == attachedImages.count - 1) {
-                    attachmentImageViews[index].bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
+                    bottomConstraint = attachmentImageViews[index].bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16)
+//                    attachmentImageViews[index].bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
+                    bottomConstraint?.isActive = true
                 }
             }
         }
         else {
-            messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
+            bottomConstraint = messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16)
+//            messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
+            bottomConstraint?.isActive = true
         }
         
         senderLabel.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
@@ -136,24 +141,6 @@ class MessageCell: UITableViewCell {
         dateLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
         dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
     
-//        if attachedImages.count > 0 {
-//            for index in 0..<attachedImages.count {
-//                if (index == 0) {
-//                    attachmentImageViews[index].topAnchor.constraint(equalTo: messageView.bottomAnchor, constant: 16).isActive = true
-//                }
-//                else {
-//                    attachmentImageViews[index].topAnchor.constraint(equalTo: attachmentImageViews[index-1].bottomAnchor, constant: 5).isActive = true
-//                }
-//                attachmentImageViews[index].leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
-//                attachmentImageViews[index].widthAnchor.constraint(equalToConstant: 30).isActive = true
-//                attachmentImageViews[index].heightAnchor.constraint(equalToConstant: 30).isActive = true
-//
-//                if (index == attachedImages.count - 1) {
-//                    attachmentImageViews[index].bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
-//                }
-//            }
-//        }
-
     }
     
     required init?(coder aDecoder: NSCoder) {
