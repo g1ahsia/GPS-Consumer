@@ -102,8 +102,8 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "thread", for: indexPath) as! ThreadCell
         cell.sender = threads[indexPath.row].sender
-//        cell.type = threads[indexPath.row].type
-        cell.type = 1
+        cell.type = threads[indexPath.row].type
+//        cell.type = 1
         cell.message = threads[indexPath.row].message
         cell.updatedDate = threads[indexPath.row].updatedDate
         cell.isRead = threads[indexPath.row].isRead

@@ -72,18 +72,21 @@ class MessageDetailViewController: UIViewController {
     }
     
     func loadImages(_ urlStrings: [String], indexPath: IndexPath, messageId : Int) {
-        print("loading images for cell " + String(messageId))
+        print("loading images for cell " + String(indexPath.row))
 
         numCachedImages[messageId] = urlStrings.count
         cachedImages[messageId] = []
         for urlString in urlStrings {
             
             let url = URL(string: urlString)!
-            print("Sending a request")
+            print("Sending a request " + urlString )
 
             let downloadTask:URLSessionDownloadTask =
                 URLSession.shared.downloadTask(with: url, completionHandler: { [self]
                 (location: URL?, response: URLResponse?, error: Error?) -> Void in
+                    
+                print("got image for cell " + String(indexPath.row))
+
                 if let location = location {
                     if let data:Data = try? Data(contentsOf: location) {
                         if let image:UIImage = UIImage(data: data) {
@@ -93,12 +96,15 @@ class MessageDetailViewController: UIViewController {
                             
                             if (images.count == numCachedImages[messageId]) {
                                 DispatchQueue.main.async(execute: { () -> Void in
+//                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                     print("reload cell ", String(indexPath.row))
-                                    self.messageDetailTableView.beginUpdates()
-                                    self.messageDetailTableView.reloadRows(
-                                        at: [indexPath],
-                                        with: .none)
-                                    self.messageDetailTableView.endUpdates()
+                                    
+                                    UIView.performWithoutAnimation({
+                                        let loc = self.messageDetailTableView.contentOffset
+                                        self.messageDetailTableView.reloadRows(at: [indexPath], with: .none)
+                                        self.messageDetailTableView.contentOffset = loc
+                                    })
+
                                 })
                             }
                         }
@@ -212,7 +218,6 @@ extension MessageDetailViewController: UITableViewDelegate, UITableViewDataSourc
                     self.messageDetailTableView.reloadData()
                 }
 
-                
                 for index in 0...messages.count - 1 {
                     let attachments = self.messages[index].attachments
                     let messageId = self.messages[index].id

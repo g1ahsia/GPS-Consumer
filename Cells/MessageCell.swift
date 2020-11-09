@@ -93,6 +93,7 @@ class MessageCell: UITableViewCell {
             attachmentImageViews.removeAll()
             for attachedImage in attachedImages {
                 let imageView = UIImageView(image: attachedImage)
+//                imageView.contentMode = .scaleAspectFit
                 imageView.isUserInteractionEnabled = true
                 imageView.translatesAutoresizingMaskIntoConstraints = false
                 attachmentImageViews.append(imageView)
@@ -111,7 +112,7 @@ class MessageCell: UITableViewCell {
                     attachmentImageViews[index].topAnchor.constraint(equalTo: attachmentImageViews[index-1].bottomAnchor, constant: 5).isActive = true
                 }
                 attachmentImageViews[index].leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
-                attachmentImageViews[index].rightAnchor.constraint(equalTo: self.contentView.rightAnchor).isActive = true
+                attachmentImageViews[index].rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -16).isActive = true
                 attachmentImageViews[index].heightAnchor.constraint(equalTo: attachmentImageViews[index].widthAnchor, multiplier: (attachmentImageViews[index].image?.size.height)!/(attachmentImageViews[index].image?.size.width)!).isActive = true
 
                 if (index == attachedImages.count - 1) {
