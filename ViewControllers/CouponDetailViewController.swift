@@ -220,12 +220,21 @@ class CouponDetailViewController: UIViewController {
 //        self.present(alert, animated: true)
         let cell = couponTableView.cellForRow(at: NSIndexPath(row: 0, section: 0) as IndexPath) as! CouponCell
 
-        NetworkManager.useCoupon(id: cell.id!) { (coupon) in
-            print("used ", coupon)
-        }
-        
-        GlobalVariables.showAlertWithOptions(title: MSG_TITLE_USE_COUPON, message: "立即兌換『保養品七折優惠』", confirmString: MSG_TITLE_USE, vc: self) {
-            print("已兌換")
+        GlobalVariables.showAlertWithOptions(title: MSG_TITLE_USE_COUPON, message: "立即兌換『" + cell.name! + "』", confirmString: MSG_TITLE_USE, vc: self) {
+            print("確認要兌換")
+            NetworkManager.useCoupon(id: cell.id!) { (result) in
+                if (result["status"] as! Int == 1) {
+                    print("used ", result)
+                    DispatchQueue.main.async {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                }
+                else {
+                    DispatchQueue.main.async {
+                        GlobalVariables.showAlert(title: MSG_TITLE_USE_COUPON, message: ERR_USING_COUPON, vc: self)
+                    }
+                }
+            }
         }
 
 

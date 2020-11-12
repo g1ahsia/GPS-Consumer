@@ -58,10 +58,10 @@ class MerchandiseCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(mainImageBackground)
+        self.contentView.addSubview(mainImageBackground)
         mainImageBackground.addSubview(mainImageView)
-        self.addSubview(nameView)
-        self.addSubview(priceLabel)
+        self.contentView.addSubview(nameView)
+        self.contentView.addSubview(priceLabel)
         self.layer.cornerRadius = 8
         self.clipsToBounds = true;
         self.contentView.backgroundColor = WHITE_SMOKE
@@ -81,9 +81,9 @@ class MerchandiseCell: UICollectionViewCell {
         if imageUrls != nil {
             if imageUrls!.count > 0 {
                 for case let imageURL in imageUrls! {
-//                    mainImageView.downloaded(from: imageURL) {
-                    mainImageView.image = #imageLiteral(resourceName: "gps_line_13")
-//                    }
+                    mainImageView.downloaded(from: imageURL) {
+//                    mainImageView.image = #imageLiteral(resourceName: "gps_line_13")
+                    }
                 }
             }
         }

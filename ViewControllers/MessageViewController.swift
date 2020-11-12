@@ -118,7 +118,8 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let messageDetailVC = MessageDetailViewController()
-        messageDetailVC.title = MESSAGE_SUBJECTS[threads[indexPath.row].type]
+        let type = threads[indexPath.row].type - 1
+        messageDetailVC.title = MESSAGE_SUBJECTS[type]
         messageDetailVC.role = self.role
         if (role == Role.Consumer) {
 //            NetworkManager.fetchMessages(id: threads[indexPath.row].id) { (messages) in

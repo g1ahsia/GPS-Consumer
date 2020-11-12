@@ -228,8 +228,10 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 switch consumer.gender {
                 case 1:
                     cell.answer = "男性"
-                default:
+                case 2:
                     cell.answer = "女性"
+                default:
+                    cell.answer = ""
                 }
                 cell.placeholder = "請選擇性別"
                 cell.fieldType = FieldType.Selection
@@ -317,7 +319,7 @@ extension AccountDetailViewController: UIPickerViewDataSource, UIPickerViewDeleg
         else {
             cell7.answer = "女性"
         }
-        consumer.gender = row
+        consumer.gender = row+1
         cell7.layoutSubviews()
         self.view.endEditing(true)
     }

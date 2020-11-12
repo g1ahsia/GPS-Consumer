@@ -123,8 +123,13 @@ class MessageCell: UITableViewCell {
             }
         }
         else {
-            bottomConstraint = messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16)
+            if (attachments.count > 0) {
+                bottomConstraint = messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -200)
 //            messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
+            }
+            else {
+                bottomConstraint = messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16)
+            }
             bottomConstraint?.isActive = true
         }
         

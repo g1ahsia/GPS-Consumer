@@ -239,7 +239,7 @@ class RegistrationViewController: UIViewController {
         textLabel.clipsToBounds = false;
         textLabel.numberOfLines = 2
         textLabel.textAlignment = .center
-        textLabel.text = "系統已寄送確認信至您的信箱，\n請輸入認碼以啟用會員帳號。"
+        textLabel.text = "系統已寄送確認碼至您的手機，\n請輸入認碼以啟用會員帳號。"
 //        textLabel.backgroundColor = .red
         return textLabel
     }()
@@ -257,7 +257,6 @@ class RegistrationViewController: UIViewController {
         return textLabel
     }()
 
-    
     var passcodeField : UITextField = {
         var textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false

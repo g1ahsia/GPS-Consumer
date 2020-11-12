@@ -135,8 +135,7 @@ class MerchandiseDetailViewController: UIViewController {
         if imageUrls != nil {
             if imageUrls!.count > 0 {
                 for case let imageURL in imageUrls! {
-                    let myGroup = DispatchGroup()
-                    mainImageView.downloaded(from: imageURL, group: myGroup) {
+                    mainImageView.downloaded(from: imageURL) {
                     }
                 }
             }

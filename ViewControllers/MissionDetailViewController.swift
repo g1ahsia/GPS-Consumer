@@ -104,7 +104,7 @@ class MissionDetailViewController: UIViewController {
         let loginButton = FBLoginButton()
         loginButton.center = view.center
         loginButton.permissions = ["public_profile", "email"]
-        view.addSubview(loginButton)
+//        view.addSubview(loginButton)
 
         if let token = AccessToken.current,
             !token.isExpired {

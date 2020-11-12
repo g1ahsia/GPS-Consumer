@@ -484,8 +484,7 @@ extension RewardCardDetailViewController: UITableViewDelegate, UITableViewDataSo
             let imageUrls = merchandises[indexPath.row].imageUrls
             if imageUrls.count > 0 {
                 for case let imageURL in imageUrls {
-                    let myGroup = DispatchGroup()
-                    cell.mainImageView.downloaded(from: imageURL, group: myGroup) {
+                    cell.mainImageView.downloaded(from: imageURL) {
                     }
                 }
             }

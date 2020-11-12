@@ -416,7 +416,14 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
             UIView.animate(withDuration: 0.5) {
             }
             typeSelection.setTitle(MESSAGE_SUBJECTS[selectedRow], for: .normal)
-            thread.type = selectedRow
+            thread.type = selectedRow + 1
+            
+            if (thread.type == 1) {
+                descPlaceholder.text = "請填寫實際領藥人姓名"
+            }
+            else {
+                descPlaceholder.text = "問題描述..."
+            }
         }
         else if (role == Role.MemberStore) {
             let consumerSearchVC = ConsumerSearchViewController()
@@ -461,6 +468,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                     case Role.Consumer:
                         typeSelection.setTitle(MESSAGE_SUBJECTS[0], for: .normal)
                         typeLabel.isHidden = false
+                        thread.type = 1
+                        descPlaceholder.text = "請填寫實際領藥人姓名"
+
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { // Change `0.05` to the desired number of seconds.
                             self.attachButtonTapped(sender: self.attach)
                         }
@@ -523,7 +533,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
 
         descPlaceholder.leftAnchor.constraint(equalTo: contentScrollView.leftAnchor, constant: 16).isActive = true
         descPlaceholder.topAnchor.constraint(equalTo: contentScrollView.topAnchor).isActive = true
-        descPlaceholder.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        descPlaceholder.widthAnchor.constraint(equalToConstant: 200).isActive = true
         descPlaceholder.heightAnchor.constraint(equalToConstant: 20).isActive = true
 
         cancel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
@@ -665,10 +675,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         delete.translatesAutoresizingMaskIntoConstraints = false
         delete.setImage(#imageLiteral(resourceName: " ic_fill_cross_grey"), for: .normal)
         delete.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
-        
 
         contentScrollView .addSubview(imageView)
-        imageView .addSubview(delete)
+        imageView.addSubview(delete)
         
         imageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
         imageView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
@@ -782,7 +791,13 @@ extension MessageComposeViewController: UIPickerViewDataSource, UIPickerViewDele
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         typeSelection.setTitle(MESSAGE_SUBJECTS[row], for: .normal)
         selectedRow = row
-        thread.type = selectedRow
+        thread.type = selectedRow + 1
+        if (thread.type == 1) {
+            descPlaceholder.text = "請填寫實際領藥人姓名"
+        }
+        else {
+            descPlaceholder.text = "問題描述..."
+        }
     }
 
 }
