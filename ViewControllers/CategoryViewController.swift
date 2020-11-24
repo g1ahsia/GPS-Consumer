@@ -19,6 +19,8 @@ class CategoryViewController: UIViewController {
 
     var selectedLevel = 0
     
+    var selectedCell = CategoryCell()
+    
     var merchandiseSearchBar : UISearchBar = {
         var searchBar = UISearchBar()
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -53,6 +55,8 @@ class CategoryViewController: UIViewController {
         button.backgroundColor = ATLANTIS_GREEN
         button.layer.cornerRadius = 10;
         button.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
+        button.alpha = 0.5
+        button.isEnabled = false
         return button
     }()
     
@@ -106,7 +110,12 @@ class CategoryViewController: UIViewController {
     
     @objc private func searchButtonTapped() {
         let searchResultVC = SearchResultViewController()
-        self.navigationController?.pushViewController(searchResultVC, animated: true)
+        NetworkManager.fetchMerchandisesByCategory(Id: selectedCell.category.id) { (merchandises) in
+            DispatchQueue.main.async {
+                searchResultVC.merchandises = merchandises
+                self.navigationController?.pushViewController(searchResultVC, animated: true)
+            }
+        }
     }
     
     private func setupLayout() {
@@ -172,8 +181,11 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource, UI
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        search.alpha = 1.0
+        search.isEnabled = true
+
         if (indexPath.section == 0) {
-            let selectedCell = tableView.cellForRow(at: indexPath) as! CategoryCell
+            selectedCell = tableView.cellForRow(at: indexPath) as! CategoryCell
             selectedCell.arrow.isHidden = true
 
             selectedLevel = selectedCell.category.level // 紀錄選擇的是哪一個level
@@ -210,7 +222,7 @@ extension CategoryViewController: UITableViewDelegate, UITableViewDataSource, UI
             tableView.selectRow(at: IndexPath(row: selectedIndex!, section: 0), animated: false, scrollPosition: UITableView.ScrollPosition.none)
         }
         else {
-            let selectedCell = tableView.cellForRow(at: indexPath) as! CategoryCell
+            selectedCell = tableView.cellForRow(at: indexPath) as! CategoryCell
             selectedLevel = selectedCell.category.level // 紀錄選擇的是哪一個level
             var indicesToBeRemoved = [Int]() // 儲存將被移除的index清單
             // traverse 目前table顯示的清單
@@ -259,7 +271,14 @@ extension CategoryViewController: UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        let searchResultVC = SearchResultViewController()
+//        self.navigationController?.pushViewController(searchResultVC, animated: true)
         let searchResultVC = SearchResultViewController()
-        self.navigationController?.pushViewController(searchResultVC, animated: true)
+        NetworkManager.fetchMerchandisesByKeyword(keyword: merchandiseSearchBar.text ?? "") { (merchandises) in
+            DispatchQueue.main.async {
+                searchResultVC.merchandises = merchandises
+                self.navigationController?.pushViewController(searchResultVC, animated: true)
+            }
+        }
     }
 }

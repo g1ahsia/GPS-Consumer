@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 class RewardCardDetailViewController: UIViewController {
+    var id : Int?
     var mainImage : UIImage?
     var templateId : Int!
     var name : String?
@@ -20,7 +21,7 @@ class RewardCardDetailViewController: UIViewController {
     var pointsCollectionViewHeightConstraint: NSLayoutConstraint?
     var inactiveImage : UIImage!
     var activeImage : UIImage!
-    var merchandises = [Merchandise]()
+    var merchandises : [Merchandise]!
     var heightOfRewardCard = CGFloat(0)
     
     var mainScrollView : UIScrollView = {
@@ -180,21 +181,21 @@ class RewardCardDetailViewController: UIViewController {
 
         merchandiseTableView.tableFooterView = UIView(frame: .zero)
         
-        NetworkManager.fetchMerchandises() { (merdhandises) in
-            self.merchandises = merdhandises
-            DispatchQueue.main.async {
-                self.hintLabel.text = "可兌換商品(\(self.merchandises.count)選1)"
-                self.merchandiseTableView.reloadData()
+//        NetworkManager.fetchMerchandises() { (merdhandises) in
+//            self.merchandises = merdhandises
+//            DispatchQueue.main.async {
+//                self.hintLabel.text = "可兌換商品(\(self.merchandises.count)選1)"
+//                self.merchandiseTableView.reloadData()
                 self.setupLayout() // for calculating table height based on number of merchandises
-            }
-        }
+//            }
+//        }
         rewardCardTableView.separatorColor = .clear
 
     }
     
     private func setupLayout() {
         
-        if (threshold != currentPoint) {
+        if (threshold > currentPoint) {
             use.alpha = 0.5
             use.isUserInteractionEnabled = false
         }
@@ -204,6 +205,9 @@ class RewardCardDetailViewController: UIViewController {
         }
         if let desc = desc {
             descView.text = desc
+        }
+        if merchandises.count > 0 {
+            self.merchandiseTableView.reloadData()
         }
 
 //        if let name = name {
@@ -409,6 +413,8 @@ class RewardCardDetailViewController: UIViewController {
     @objc private func scanButtonTapped(sender: UIButton!) {
         let qrCodeScannerVC = QRCodeScannerViewController()
         qrCodeScannerVC.modalPresentationStyle = .fullScreen
+        qrCodeScannerVC.rewardCardId = id
+        qrCodeScannerVC.rewardCardDetailVC = self
         present(qrCodeScannerVC, animated: true)
         
 //        let barcodeScannerVC = BarcodeScannerViewController()
@@ -419,7 +425,20 @@ class RewardCardDetailViewController: UIViewController {
     
     @objc private func useButtonTapped(sender: UIButton!) {
         GlobalVariables.showAlertWithOptions(title: MSG_TITLE_USE_REWARD_CARD, message: "立即兌換\(self.name!)", confirmString: MSG_USE_REWARD_CARD, vc: self) {
-            print("已兌換")
+            NetworkManager.withdraw(id: self.id!) { (result) in
+                if (result["status"] as! Int == 1) {
+                    DispatchQueue.main.async { [self] in
+                        self.navigationController?.popViewController(animated: true)
+                        GlobalVariables.showAlert(title: MSG_TITLE_WITHDRAW_REWARD_CARD, message: MSG_USED_REWARD_CARD, vc: self)
+                    }
+                }
+                else {
+                    DispatchQueue.main.async { [self] in
+                        self.navigationController?.popViewController(animated: true)
+                        GlobalVariables.showAlert(title: MSG_TITLE_WITHDRAW_REWARD_CARD, message: ERR_WITHDRAWING_REWARD_CARD, vc: self)
+                    }
+                }
+            }
         }
     }
 

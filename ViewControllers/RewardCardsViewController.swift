@@ -47,11 +47,16 @@ class RewardCardsViewController: UIViewController {
         //        }
         if (purpose == ConsumerSearchPurpose.LookUp) {
             title = "商品兌換紀錄"
-            rewardCards = [RewardCard.init(id: 1, templateId: 1, name: "綠之集點卡", threshold: 15, currentPoint: 15, description: "集滿點數即可兌換商品。", rewards: [1, 12, 13, 14]), RewardCard.init(id: 2, templateId: 2, name: "彩虹集點卡", threshold: 20, currentPoint: 20, description: "集滿點數即可兌換商品。", rewards: [1, 12, 13, 14]), RewardCard.init(id: 3, templateId: 3, name: "禮物集點卡", threshold: 15, currentPoint: 15, description: "集滿點數即可兌換商品。", rewards: [1, 12, 13, 14]), RewardCard.init(id: 4, templateId: 4, name: "微笑集點卡", threshold: 30, currentPoint: 30, description: "集滿點數即可兌換商品。", rewards: [1, 12, 13, 14])]
+            
+            NetworkManager.fetchUsedRewardCard { (rewardCards) in
+                self.rewardCards = rewardCards
+                self.rewardCardTableView.reloadData()
+            }
+//            rewardCards = [RewardCard.init(id: 1, templateId: 1, name: "綠之集點卡", threshold: 15, currentPoint: 15, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 2, templateId: 2, name: "彩虹集點卡", threshold: 20, currentPoint: 20, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 3, templateId: 3, name: "禮物集點卡", threshold: 15, currentPoint: 15, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 4, templateId: 4, name: "微笑集點卡", threshold: 30, currentPoint: 30, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14])]
         }
         else {
             title = "請選擇一張集點卡"
-            rewardCards = [RewardCard.init(id: 1, templateId: 1, name: "綠之集點卡", threshold: 15, currentPoint: 9, description: "集滿點數即可兌換商品。", rewards: [1, 12, 13, 14]), RewardCard.init(id: 2, templateId: 2, name: "彩虹集點卡", threshold: 20, currentPoint: 15, description: "集滿點數即可兌換商品。", rewards: [1, 12, 13, 14]), RewardCard.init(id: 3, templateId: 3, name: "禮物集點卡", threshold: 15, currentPoint: 10, description: "集滿點數即可兌換商品。", rewards: [1, 12, 13, 14]), RewardCard.init(id: 4, templateId: 4, name: "微笑集點卡", threshold: 30, currentPoint: 10, description: "集滿點數即可兌換商品。", rewards: [1, 12, 13, 14])]
+//            rewardCards = [RewardCard.init(id: 1, templateId: 1, name: "綠之集點卡", threshold: 15, currentPoint: 9, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 2, templateId: 2, name: "彩虹集點卡", threshold: 20, currentPoint: 15, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 3, templateId: 3, name: "禮物集點卡", threshold: 15, currentPoint: 10, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 4, templateId: 4, name: "微笑集點卡", threshold: 30, currentPoint: 10, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14])]
         }
 
     }

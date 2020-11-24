@@ -40,12 +40,12 @@ class SearchResultViewController: UIViewController {
         view.backgroundColor = SNOW
         title = "搜尋結果"
         setupLayout()
-        NetworkManager.fetchMerchandises() { (merdhandises) in
-            self.merchandises = merdhandises
-            DispatchQueue.main.async {
-                self.merchandiseCollectionView.reloadData()
-            }
-        }
+//        NetworkManager.fetchMerchandises() { (merdhandises) in
+//            self.merchandises = merdhandises
+//            DispatchQueue.main.async {
+//                self.merchandiseCollectionView.reloadData()
+//            }
+//        }
     }
     
     private func setupLayout() {

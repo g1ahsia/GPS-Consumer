@@ -169,7 +169,7 @@ class HomeViewController: UIViewController {
             }
         }
         
-        NetworkManager.fetchMerchandises() { (merdhandises) in
+        NetworkManager.fetchMerchandisesByKeyword(keyword : "") { (merdhandises) in
             self.merchandises = merdhandises
             DispatchQueue.main.async {
                 self.merchandiseCollectionView.reloadData()
@@ -583,12 +583,14 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
         }
         else if (tableView == rewardCardTableView) {
             let rewardCardVC = RewardCardDetailViewController()
+            rewardCardVC.id = rewardCards[indexPath.row].id
             rewardCardVC.name = rewardCards[indexPath.row].name
             rewardCardVC.store = "松仁藥局"
             rewardCardVC.templateId = rewardCards[indexPath.row].templateId
             rewardCardVC.threshold = rewardCards[indexPath.row].threshold
             rewardCardVC.currentPoint = rewardCards[indexPath.row].currentPoint
             rewardCardVC.desc = rewardCards[indexPath.row].description
+            rewardCardVC.merchandises = rewardCards[indexPath.row].merchandises
             self.navigationController?.pushViewController(rewardCardVC, animated: true)
         }
 

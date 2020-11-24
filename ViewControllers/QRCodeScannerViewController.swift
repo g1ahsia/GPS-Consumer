@@ -10,9 +10,12 @@ import AVFoundation
 import UIKit
 
 class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
-    var captureSession: AVCaptureSession!
-    var previewLayer: AVCaptureVideoPreviewLayer!
-    
+    var captureSession : AVCaptureSession!
+    var previewLayer : AVCaptureVideoPreviewLayer!
+    var qrCodeValue = String()
+    var rewardCardId : Int?
+    var rewardCardDetailVC : RewardCardDetailViewController?
+
     lazy var captureBracket : UIImageView = {
         var imageView = UIImageView()
         imageView.image = #imageLiteral(resourceName: "capture")
@@ -64,15 +67,9 @@ class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObje
 
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer.frame = CGRect(x: 0, y: (UIScreen.main.bounds.height - UIScreen.main.bounds.width)/2, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
-        //        previewLayer.frame = view.layer.bounds
         captureBracket.frame = CGRect(x: (previewLayer.frame.width - 191)/2, y: (previewLayer.frame.width - 183)/2, width: 191, height: 183)
         previewLayer.videoGravity = .resizeAspectFill
         
-//        let cancel = UIButton()
-//        cancel.setImage(#imageLiteral(resourceName: " ic_fill_cross_grey"), for: .normal)
-//        cancel.frame = CGRect(x: 16, y: 16, width: 30, height: 30)
-//        cancel.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-
         view.layer.addSublayer(previewLayer)
         previewLayer.addSublayer(captureBracket.layer)
         
@@ -118,10 +115,36 @@ class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObje
             guard let stringValue = readableObject.stringValue else { return }
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             found(code: stringValue)
-            
-            let vc = self.presentingViewController
-            dismiss(animated: true) {
-                GlobalVariables.showAlert(title: MSG_TITLE_GAIN_POINT, message: MSG_GAIN_POINT, vc: vc)
+            qrCodeValue = stringValue
+
+            NetworkManager.validateQRCode(message: stringValue) { (result) in
+                if (result["isValid"] as! Bool) {
+                    NetworkManager.deposit(rewardCardId: self.rewardCardId!, qrCodeId: result["qrCodeId"] as! Int) { (result) in
+                        if  (result["status"] as! Int == 1) {
+                            DispatchQueue.main.async { [self] in
+                                rewardCardDetailVC!.currentPoint = (result["remainder"] as! Int)
+                                rewardCardDetailVC!.rewardCardTableView.reloadData()
+                                self.dismiss(animated: true) {
+                                    GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: MSG_GAIN_POINT, vc: self.rewardCardDetailVC!)
+                                }
+                            }
+                        }
+                        else {
+                            DispatchQueue.main.async {
+                                self.dismiss(animated: true) {
+                                    GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: ERR_DEPOSITING_POINTS, vc: self.rewardCardDetailVC!)
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    DispatchQueue.main.async {
+                        self.dismiss(animated: true) {
+                            GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: ERR_INVALID_QRCODE, vc: self.rewardCardDetailVC!)
+                        }
+                    }
+                }
             }
         }
 
@@ -144,4 +167,5 @@ class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObje
         self.dismiss(animated: true) {
         }
     }
+    
 }
