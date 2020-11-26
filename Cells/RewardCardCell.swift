@@ -61,8 +61,22 @@ class RewardCardCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.font = UIFont(name: "NotoSansTC-Bold", size: 13)
+        label.text = "可兌換"
+        label.alpha = 1.0
         return label
     }()
+    
+    var validityLabel_not : UILabel = {
+        var label = UILabel()
+        label.sizeToFit()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.font = UIFont(name: "NotoSansTC-Bold", size: 13)
+        label.text = "無法兌換"
+        label.alpha = 0.5
+        return label
+    }()
+
 
     var validityBackground : UIView = {
         var view = UIView()
@@ -82,6 +96,7 @@ class RewardCardCell: UITableViewCell {
         mainImageView.addSubview(storeLabel)
         mainImageView.addSubview(validityBackground)
         mainImageView.addSubview(validityLabel)
+        mainImageView.addSubview(validityLabel_not)
     }
     
     override func layoutSubviews() {
@@ -173,33 +188,21 @@ class RewardCardCell: UITableViewCell {
             if (isUsed) {
                 validityBackground.widthAnchor.constraint(equalToConstant: 65).isActive = true
                 validityBackground.backgroundColor = SHUTTLE_GREY
-                validityLabel.text = "已兌換"
-                validityLabel.alpha = 1.0
-                
-                validityLabel.centerYAnchor.constraint(equalTo: validityBackground.centerYAnchor).isActive = true
-                validityLabel.centerXAnchor.constraint(equalTo: validityBackground.centerXAnchor).isActive = true
-
+                validityLabel.isHidden = true
+                validityLabel_not.isHidden = false
             }
             else {
                 if (threshold != currentPoint) {
                     validityBackground.widthAnchor.constraint(equalToConstant: 78).isActive = true
                     validityBackground.backgroundColor = .clear
-                    validityLabel.text = "無法兌換"
-                    validityLabel.alpha = 0.5
-                    
-                    validityLabel.topAnchor.constraint(equalTo: mainImageView.topAnchor, constant: 16).isActive = true
-                    validityLabel.rightAnchor.constraint(equalTo: mainImageView.rightAnchor, constant: -16).isActive = true
-
+                    validityLabel.isHidden = true
+                    validityLabel_not.isHidden = false
                 }
                 else {
                     validityBackground.widthAnchor.constraint(equalToConstant: 78).isActive = true
                     validityBackground.backgroundColor = ATLANTIS_GREEN
-                    validityLabel.text = "可兌換"
-                    validityLabel.alpha = 1.0
-                    
-                    validityLabel.centerYAnchor.constraint(equalTo: validityBackground.centerYAnchor).isActive = true
-                    validityLabel.centerXAnchor.constraint(equalTo: validityBackground.centerXAnchor).isActive = true
-
+                    validityLabel.isHidden = false
+                    validityLabel_not.isHidden = true
                 }
             }
         }
@@ -240,6 +243,13 @@ class RewardCardCell: UITableViewCell {
         validityBackground.heightAnchor.constraint(equalToConstant: 28).isActive = true
         
         validityLabel.heightAnchor.constraint(equalToConstant: 28).isActive = true
+        validityLabel.centerYAnchor.constraint(equalTo: validityBackground.centerYAnchor).isActive = true
+        validityLabel.centerXAnchor.constraint(equalTo: validityBackground.centerXAnchor).isActive = true
+        
+        validityLabel_not.heightAnchor.constraint(equalToConstant: 28).isActive = true
+        validityLabel_not.topAnchor.constraint(equalTo: mainImageView.topAnchor, constant: 16).isActive = true
+        validityLabel_not.rightAnchor.constraint(equalTo: mainImageView.rightAnchor, constant: -16).isActive = true
+
         
     }
     

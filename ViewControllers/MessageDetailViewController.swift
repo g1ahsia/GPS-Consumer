@@ -67,7 +67,7 @@ class MessageDetailViewController: UIViewController {
     
     @objc private func customerButtonTapped() {
         let consumerDetailVC = ConsumerDetailViewController()
-        consumerDetailVC.id = 1
+//        consumerDetailVC.id = 1
         self.navigationController?.pushViewController(consumerDetailVC, animated: true)
     }
     

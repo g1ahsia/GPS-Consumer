@@ -328,28 +328,36 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
             messageType == MessageType.Prescription) {
             if (self.role == Role.Consumer) {
                 NetworkManager.createThread(typeId: thread.type, message: thread.message, attachments:ATTACHMENTS) { (result) in
-                    print(result)
-                    if (result["status"] as! Int == 1) {
-                        NotificationCenter.default.post(name: Notification.Name("CreatedThread"), object: nil)
-                        DispatchQueue.main.async {
+                    DispatchQueue.main.async {
+                        if (result["status"] as! Int == 1) {
+                            NotificationCenter.default.post(name: Notification.Name("CreatedThread"), object: nil)
                             self.send.isEnabled = true
                             self.dismiss(animated: true) {
-
                             }
+                        }
+                        else if (result["status"] as! Int == -1) {
+                            GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                        }
+                        else {
+                            GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
                     }
                 }
             }
             else {
                 NetworkManager.createStoreThread(typeId: 3, consumerId: self.consumer!.id, message: thread.message, attachments:ATTACHMENTS) { (result) in
-                    print(result)
-                    if (result["status"] as! Int == 1) {
-                        NotificationCenter.default.post(name: Notification.Name("CreatedThread"), object: nil)
-                        DispatchQueue.main.async {
+                    DispatchQueue.main.async {
+                        if (result["status"] as! Int == 1) {
+                            NotificationCenter.default.post(name: Notification.Name("CreatedThread"), object: nil)
                             self.send.isEnabled = true
                             self.dismiss(animated: true) {
-
                             }
+                        }
+                        else if (result["status"] as! Int == -1) {
+                            GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                        }
+                        else {
+                            GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
                     }
                 }
@@ -359,13 +367,18 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         else {
             if (self.role == Role.Consumer) {
                 NetworkManager.addMessage(threadId: thread.id, message: thread.message, attachments: ATTACHMENTS) { (result) in
-                    print(result)
-                    if (result["status"] as! Int == 1) {
-                        NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
-                        DispatchQueue.main.async {
+                    DispatchQueue.main.async {
+                        if (result["status"] as! Int == 1) {
+                            NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
                             self.send.isEnabled = true
                             self.dismiss(animated: true) {
                             }
+                        }
+                        else if (result["status"] as! Int == -1) {
+                            GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                        }
+                        else {
+                            GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
                     }
                 }
@@ -373,13 +386,18 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
             else {
                 if (self.messageType == MessageType.ReplyMessage) {
                     NetworkManager.addStoreMessage(threadId: thread.id, message: thread.message, attachments: ATTACHMENTS) { (result) in
-                        print(result)
-                        if (result["status"] as! Int == 1) {
-                            NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
-                            DispatchQueue.main.async {
+                        DispatchQueue.main.async {
+                            if (result["status"] as! Int == 1) {
+                                NotificationCenter.default.post(name: Notification.Name("AddedMessage"), object: nil)
                                 self.send.isEnabled = true
                                 self.dismiss(animated: true) {
                                 }
+                            }
+                            else if (result["status"] as! Int == -1) {
+                                GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                            }
+                            else {
+                                GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                             }
                         }
                     }

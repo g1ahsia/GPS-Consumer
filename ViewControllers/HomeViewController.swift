@@ -528,12 +528,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
             cell.name = coupons[indexPath.row].name
             cell.remark = coupons[indexPath.row].remark
             cell.templateId = coupons[indexPath.row].templateId
+            cell.imageUrl = coupons[indexPath.row].imageUrl
             cell.isUsed = false
             cell.layoutSubviews()
             
-            if (indexPath.row == 1) {
-                cell.mainImage = #imageLiteral(resourceName: "Banner-2")
-            }
+//            if (indexPath.row == 1) {
+//                cell.mainImage = #imageLiteral(resourceName: "Banner-2")
+//            }
             return cell
         }
         else if (tableView == missionTableView) {
@@ -564,6 +565,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
         if (tableView == couponTableView) {
             let couponVC = CouponDetailViewController()
             couponVC.id = coupons[indexPath.row].id
+            couponVC.imageUrl = coupons[indexPath.row].imageUrl
             couponVC.store = coupons[indexPath.row].store
             couponVC.name = coupons[indexPath.row].name
             couponVC.remark = coupons[indexPath.row].remark

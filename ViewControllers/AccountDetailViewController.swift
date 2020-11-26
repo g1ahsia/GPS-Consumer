@@ -145,6 +145,9 @@ class AccountDetailViewController: UIViewController {
                 if (status == 1) {
                     self.navigationController?.popToRootViewController(animated: true)
                 }
+                else if (status == -1) {
+                    GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                }
                 else {
                     GlobalVariables.showAlert(title: self.title, message: ERR_EDITING_INFO, vc: self)
                 }

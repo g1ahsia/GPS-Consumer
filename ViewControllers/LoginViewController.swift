@@ -162,11 +162,14 @@ class LoginViewController: UIViewController {
                         "platform" : "ios"
                     ]
 
-                    NetworkManager.setDevice(parameters: parameters) { (status) in
-                        if (status == 1) {
+                    NetworkManager.setDevice(parameters: parameters) { (result) in
+                        if (result["status"] as! Int == 1) {
                             print("device token added")
                         }
                     }
+                }
+                else if (result["status"] as! Int == -1) {
+                    GlobalVariables.showAlert(title: MSG_TITLE_LOGIN, message: ERR_CONNECTING, vc: self)
                 }
                 else {
                     GlobalVariables.showAlert(title: MSG_TITLE_LOGIN, message: result["message"] as? String, vc: self)

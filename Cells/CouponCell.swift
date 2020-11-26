@@ -3,7 +3,8 @@ import Foundation
 import UIKit
 
 class CouponCell: UITableViewCell {
-    var mainImage : UIImage?
+//    var mainImage : UIImage?
+    var imageUrl : String?
     var id : Int?
     var store : String?
     var name : String?
@@ -87,8 +88,12 @@ class CouponCell: UITableViewCell {
     
     override func layoutSubviews() {
         super .layoutSubviews()
-        if let image = mainImage {
-            mainImageView.image = image
+//        if let image = mainImage {
+//            mainImageView.image = image
+//        }
+        if let imageUrl = imageUrl {
+            mainImageView.downloaded(from: imageUrl) {
+            }
         }
         if let id = id {
         }

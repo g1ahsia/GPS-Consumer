@@ -31,34 +31,7 @@ class RewardCardDetailViewController: UIViewController {
         scrollView.isScrollEnabled = true
         return scrollView
     }()
-    
-//    var mainImageView : UIImageView = {
-//       var imageView = UIImageView()
-//        imageView.translatesAutoresizingMaskIntoConstraints = false
-//        imageView.layer.cornerRadius = 16;
-//        imageView.clipsToBounds = true;
-//        imageView.image = #imageLiteral(resourceName: "flower-points-card")
-//        return imageView
-//    }()
-//
-//    var nameLabel : UILabel = {
-//        var textLabel = UILabel()
-//        textLabel.translatesAutoresizingMaskIntoConstraints = false
-//        textLabel.backgroundColor = .clear
-//        textLabel.textColor = UIColor .white
-//        textLabel.font = UIFont(name: "NotoSansTC-Medium", size: 28)
-//        return textLabel
-//    }()
-//
-//    var storeLabel : UILabel = {
-//        var textLabel = UILabel()
-//        textLabel.translatesAutoresizingMaskIntoConstraints = false
-//        textLabel.backgroundColor = .clear
-//        textLabel.textColor = UIColor .white
-//        textLabel.font = UIFont(name: "NotoSansTC-Bold", size: 11)
-//        return textLabel
-//    }()
-    
+        
     lazy var rewardCardTableView : UITableView = {
         var tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -112,26 +85,12 @@ class RewardCardDetailViewController: UIViewController {
         textLabel.textAlignment = .center
         return textLabel
     }()
-    
-//    lazy var pointsCollectionView : UICollectionView = {
-//        let layout = UICollectionViewFlowLayout()
-//        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-//        collectionView.translatesAutoresizingMaskIntoConstraints = false
-//        collectionView.setCollectionViewLayout(layout, animated: true)
-//        collectionView.dataSource = self
-//        collectionView.delegate = self
-//        collectionView.register(PointCell.self, forCellWithReuseIdentifier: "point")
-//        collectionView.backgroundColor = .clear
-//        collectionView.isUserInteractionEnabled = false
-//        return collectionView
-//    }()
-    
+        
     lazy var merchandiseTableView : UITableView = {
         var tableView = UITableView()
         tableView.isScrollEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = UITableView.automaticDimension
-//        tableView.rowHeight = 110
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(MissionCell.self, forCellReuseIdentifier: "mission")
@@ -167,10 +126,6 @@ class RewardCardDetailViewController: UIViewController {
         title = "集點卡"
         view.addSubview(mainScrollView)
 
-//        mainScrollView.addSubview(mainImageView)
-//        mainImageView.addSubview(pointsCollectionView)
-//        mainImageView.addSubview(nameLabel)
-//        mainImageView.addSubview(storeLabel)
         mainScrollView.addSubview(rewardCardTableView)
         mainScrollView.addSubview(descView)
         mainScrollView.addSubview(scan)
@@ -181,14 +136,7 @@ class RewardCardDetailViewController: UIViewController {
 
         merchandiseTableView.tableFooterView = UIView(frame: .zero)
         
-//        NetworkManager.fetchMerchandises() { (merdhandises) in
-//            self.merchandises = merdhandises
-//            DispatchQueue.main.async {
-//                self.hintLabel.text = "可兌換商品(\(self.merchandises.count)選1)"
-//                self.merchandiseTableView.reloadData()
-                self.setupLayout() // for calculating table height based on number of merchandises
-//            }
-//        }
+        self.setupLayout() // for calculating table height based on number of merchandises
         rewardCardTableView.separatorColor = .clear
 
     }
@@ -210,122 +158,11 @@ class RewardCardDetailViewController: UIViewController {
             self.merchandiseTableView.reloadData()
         }
 
-//        if let name = name {
-//            nameLabel.text = name
-//        }
-//        if let store = store {
-//            storeLabel.text = store
-//        }
-//        if let templateId = templateId {
-//            switch templateId {
-//            case 1:
-//                mainImage = #imageLiteral(resourceName: "flower-points-card")
-//                inactiveImage = #imageLiteral(resourceName: "flower-check-inactive")
-//                activeImage = #imageLiteral(resourceName: "flower-check-active")
-//                break
-//            case 2:
-//                mainImage = #imageLiteral(resourceName: "rainbow-points-card")
-//                inactiveImage = #imageLiteral(resourceName: "rainbow-check-inactive")
-//                activeImage = #imageLiteral(resourceName: "rainbow-check-active")
-//            case 3:
-//                mainImage = #imageLiteral(resourceName: "present-points-card")
-//                inactiveImage = #imageLiteral(resourceName: "present-check-inactive")
-//                activeImage = #imageLiteral(resourceName: "present-check-active")
-//            case 4:
-//                mainImage = #imageLiteral(resourceName: "smile-points-card")
-//                inactiveImage = #imageLiteral(resourceName: "smile-check-inactive")
-//                activeImage = #imageLiteral(resourceName: "smile-check-active")
-//            default:
-//                break
-//            }
-//        }
-//        if let image = mainImage {
-//            mainImageView.image = image
-//        }
-//        var collectionViewHeight = CGFloat(0)
-//        var cellSize = CGFloat(0)
-//        if let threshold = threshold {
-//            if (threshold <= 5) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 4*10) / 5
-//                collectionViewHeight = 2 * cellSize + 5
-//            }
-//            else if (threshold <= 10) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 4*10) / 5
-//                collectionViewHeight = 2 * cellSize + 5
-//            }
-//            else if (threshold == 15) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 4*10) / 5
-//                collectionViewHeight = 3 * cellSize + 2 * 5
-//            }
-//            else if (threshold == 20) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 4*10) / 5
-//                collectionViewHeight = 4 * cellSize + 3 * 5
-//            }
-//            else if (threshold == 25) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 4*10) / 5
-//                collectionViewHeight = 5 * cellSize + 4 * 5
-//            }
-//            else if (threshold == 30) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 9*10) / 10
-//                collectionViewHeight = 3 * cellSize + 2 * 5
-//            }
-//            else if (threshold == 35) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 9*10) / 10
-//                collectionViewHeight = 4 * cellSize + 3 * 5
-//            }
-//            else if (threshold == 40) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 9*10) / 10
-//                collectionViewHeight = 4 * cellSize + 3 * 5
-//            }
-//            else if (threshold == 45) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 9*10) / 10
-//                collectionViewHeight = 5 * cellSize + 4 * 5
-//            }
-//            else if (threshold == 50) {
-//                cellSize = (UIScreen.main.bounds.width - 72 - 9*10) / 10
-//                collectionViewHeight = 5 * cellSize + 4 * 5
-//            }
-//            pointsCollectionViewHeightConstraint?.isActive = false
-//            pointsCollectionViewHeightConstraint = pointsCollectionView.heightAnchor.constraint(equalToConstant: collectionViewHeight)
-//            pointsCollectionViewHeightConstraint?.isActive = true
-//            pointsCollectionView.reloadData()
-//        }
-
         mainScrollView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         mainScrollView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         mainScrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         mainScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
 
-//        mainImageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-//        mainImageView.topAnchor.constraint(equalTo: mainScrollView.topAnchor, constant: 30).isActive = true
-//        mainImageView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-//        mainImageView.bottomAnchor.constraint(equalTo: pointsCollectionView.bottomAnchor, constant: 20).isActive = true
-//
-//        nameLabel.leftAnchor.constraint(equalTo: mainImageView.leftAnchor, constant: 16).isActive = true
-//        nameLabel.topAnchor.constraint(equalTo: mainImageView.topAnchor, constant: 33).isActive = true
-//        nameLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
-//
-//        storeLabel.leftAnchor.constraint(equalTo: mainImageView.leftAnchor, constant: 16).isActive = true
-//        storeLabel.topAnchor.constraint(equalTo: mainImageView.topAnchor, constant: 16).isActive = true
-//        storeLabel.heightAnchor.constraint(equalToConstant: 15).isActive = true
-//
-//        pointsCollectionView.leftAnchor.constraint(equalTo: mainImageView.leftAnchor, constant: 16).isActive = true
-//        pointsCollectionView.topAnchor.constraint(equalTo: mainImageView.topAnchor, constant: 72).isActive = true
-//        pointsCollectionView.rightAnchor.constraint(equalTo: mainImageView.rightAnchor, constant: -16).isActive = true
-
-//        let layout = UICollectionViewFlowLayout()
-//        layout.scrollDirection = UICollectionView.ScrollDirection.vertical
-//        layout.itemSize = CGSize(width: cellSize, height: cellSize)
-//
-//        if (threshold <= 5) {
-//            layout.sectionInset = UIEdgeInsets(top: (collectionViewHeight - cellSize)/2, left: 0, bottom: 0, right: 0)
-//        }
-//        else {
-//            layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//        }
-//        layout.minimumInteritemSpacing = 10
-//        layout.minimumLineSpacing = 5
-//        pointsCollectionView.collectionViewLayout = layout
         var heightOfPointCollectionView = CGFloat(0.0)
         var mainHeight = CGFloat(0.0)
         var gapHeight = CGFloat(0.0)
@@ -416,26 +253,23 @@ class RewardCardDetailViewController: UIViewController {
         qrCodeScannerVC.rewardCardId = id
         qrCodeScannerVC.rewardCardDetailVC = self
         present(qrCodeScannerVC, animated: true)
-        
-//        let barcodeScannerVC = BarcodeScannerViewController()
-//        present(barcodeScannerVC, animated: true)
-
 
     }
     
     @objc private func useButtonTapped(sender: UIButton!) {
         GlobalVariables.showAlertWithOptions(title: MSG_TITLE_USE_REWARD_CARD, message: "立即兌換\(self.name!)", confirmString: MSG_USE_REWARD_CARD, vc: self) {
             NetworkManager.withdraw(id: self.id!) { (result) in
-                if (result["status"] as! Int == 1) {
-                    DispatchQueue.main.async { [self] in
+                DispatchQueue.main.async { [self] in
+                    if (result["status"] as! Int == 1) {
                         self.navigationController?.popViewController(animated: true)
                         GlobalVariables.showAlert(title: MSG_TITLE_WITHDRAW_REWARD_CARD, message: MSG_USED_REWARD_CARD, vc: self)
                     }
-                }
-                else {
-                    DispatchQueue.main.async { [self] in
+                    else if (result["status"] as! Int == -1) {
+                        GlobalVariables.showAlert(title: MSG_TITLE_WITHDRAW_REWARD_CARD, message: ERR_CONNECTING, vc: self)
+                    }
+                    else {
                         self.navigationController?.popViewController(animated: true)
-                        GlobalVariables.showAlert(title: MSG_TITLE_WITHDRAW_REWARD_CARD, message: ERR_WITHDRAWING_REWARD_CARD, vc: self)
+                        GlobalVariables.showAlert(title: MSG_TITLE_WITHDRAW_REWARD_CARD, message: result["message"] as? String, vc: self)
                     }
                 }
             }

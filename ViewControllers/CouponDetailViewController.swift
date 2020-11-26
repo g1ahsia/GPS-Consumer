@@ -11,6 +11,7 @@ import UIKit
 
 class CouponDetailViewController: UIViewController {
     var id : Int?
+    var imageUrl : String?
     var mainImage : UIImage?
     var store : String?
     var name : String?
@@ -223,14 +224,15 @@ class CouponDetailViewController: UIViewController {
         GlobalVariables.showAlertWithOptions(title: MSG_TITLE_USE_COUPON, message: "立即兌換『" + cell.name! + "』", confirmString: MSG_TITLE_USE, vc: self) {
             print("確認要兌換")
             NetworkManager.useCoupon(id: cell.id!) { (result) in
-                if (result["status"] as! Int == 1) {
-                    print("used ", result)
-                    DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    if (result["status"] as! Int == 1) {
+                        print("used ", result)
                         self.navigationController?.popViewController(animated: true)
                     }
-                }
-                else {
-                    DispatchQueue.main.async {
+                    else if (result["status"] as! Int == -1) {
+                        GlobalVariables.showAlert(title: MSG_TITLE_USE_COUPON, message: ERR_CONNECTING, vc: self)
+                    }
+                    else {
                         GlobalVariables.showAlert(title: MSG_TITLE_USE_COUPON, message: ERR_USING_COUPON, vc: self)
                     }
                 }
@@ -254,12 +256,12 @@ extension CouponDetailViewController: UITableViewDelegate, UITableViewDataSource
         let cell = tableView.dequeueReusableCell(withIdentifier: "coupon", for: indexPath) as! CouponCell
         cell.selectionStyle = .none
         cell.id = id
+        cell.imageUrl = imageUrl
         cell.store = store
         cell.name = name
         cell.remark = remark
         cell.templateId = templateId
         cell.isUsed = false
-        cell.mainImage = mainImage
         cell.layoutSubviews()
         return cell
     }

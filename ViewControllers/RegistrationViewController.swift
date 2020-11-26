@@ -655,21 +655,12 @@ class RegistrationViewController: UIViewController {
                 DispatchQueue.main.async {
                     if (status == 1) {
                         self.goToNextPage()
-                        
-//                        let uuid = UUID().uuidString
-//                        let parameters: [String: Any] = [
-//                            "deviceId" : uuid,
-//                            "platform" : "ios"
-//                        ]
-//
-//                        NetworkManager.setDevice(parameters: parameters) { (status) in
-//                            if (status == 1) {
-//                                print("device token added")
-//                            }
-//                        }
+                    }
+                    else if (status == -1) {
+                        GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
                     }
                     else {
-                            GlobalVariables.showAlert(title: self.title, message: ERR_CREATING_ACCOUNT, vc: self)
+                        GlobalVariables.showAlert(title: self.title, message: ERR_CREATING_ACCOUNT, vc: self)
                     }
                 }
             }
@@ -690,12 +681,16 @@ class RegistrationViewController: UIViewController {
                             "platform" : "ios"
                         ]
                         
-                        NetworkManager.setDevice(parameters: parameters) { (status) in
-                            if (status == 1) {
+                        NetworkManager.setDevice(parameters: parameters) { (result) in
+                            if (result["status"] as! Int == 1) {
                                 print("device token added")
                             }
                         }
                     }
+                    else if (status == -1) {
+                        GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                    }
+
                     else {
                             GlobalVariables.showAlert(title: self.title, message: ERR_ACTIVATING_ACCOUNT, vc: self)
                     }

@@ -92,12 +92,18 @@ class ForgetPasswordViewController: UIViewController {
             return
         }
         
-        NetworkManager.sendNewPassword(mobilePhone: cell0.answerField.text!) { (status) in
+        NetworkManager.sendNewPassword(mobilePhone: cell0.answerField.text!) { (result) in
             DispatchQueue.main.async {
-                if (status == 1) {
+                if (result["status"] as! Int == 1) {
                     GlobalVariables.showAlertWithOptions(title: MSG_TITLE_NEW_PASSWORD, message: MSG_NEW_PASSWORD, confirmString: MSG_RE_LOGIN, vc: self) {
                         self.navigationController?.popViewController(animated: true)
                     }
+                }
+                else if (result["status"] as! Int == -1) {
+                    GlobalVariables.showAlert(title: MSG_TITLE_NEW_PASSWORD, message: ERR_CONNECTING, vc: self)
+                }
+                else {
+                    GlobalVariables.showAlert(title: MSG_TITLE_NEW_PASSWORD, message: result["message"] as? String, vc: self)
                 }
             }
         }

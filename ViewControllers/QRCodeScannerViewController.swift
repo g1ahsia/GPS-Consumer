@@ -120,19 +120,20 @@ class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObje
             NetworkManager.validateQRCode(message: stringValue) { (result) in
                 if (result["isValid"] as! Bool) {
                     NetworkManager.deposit(rewardCardId: self.rewardCardId!, qrCodeId: result["qrCodeId"] as! Int) { (result) in
-                        if  (result["status"] as! Int == 1) {
-                            DispatchQueue.main.async { [self] in
+                        DispatchQueue.main.async { [self] in
+                            if  (result["status"] as! Int == 1) {
                                 rewardCardDetailVC!.currentPoint = (result["remainder"] as! Int)
                                 rewardCardDetailVC!.rewardCardTableView.reloadData()
                                 self.dismiss(animated: true) {
                                     GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: MSG_GAIN_POINT, vc: self.rewardCardDetailVC!)
                                 }
                             }
-                        }
-                        else {
-                            DispatchQueue.main.async {
+                            else if (result["status"] as! Int == -1) {
+                                GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: ERR_CONNECTING, vc: self)
+                            }
+                            else {
                                 self.dismiss(animated: true) {
-                                    GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: ERR_DEPOSITING_POINTS, vc: self.rewardCardDetailVC!)
+                                    GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: result["message"] as! String, vc: self.rewardCardDetailVC!)
                                 }
                             }
                         }
@@ -141,7 +142,7 @@ class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObje
                 else {
                     DispatchQueue.main.async {
                         self.dismiss(animated: true) {
-                            GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: ERR_INVALID_QRCODE, vc: self.rewardCardDetailVC!)
+                            GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: result["message"] as! String, vc: self.rewardCardDetailVC!)
                         }
                     }
                 }
