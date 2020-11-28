@@ -279,6 +279,7 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 break
             case 8:
                 let changePasswordVC = ChangePasswordViewController()
+                changePasswordVC.role = Role.Consumer
                 self.navigationController?.pushViewController(changePasswordVC, animated: true)
                 break
             default:

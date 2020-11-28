@@ -11,6 +11,7 @@ import UIKit
 
 
 class ChangePasswordViewController: UIViewController {
+    var role : Role!
     lazy var infoTableView : UITableView = {
         var tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -81,16 +82,33 @@ class ChangePasswordViewController: UIViewController {
             return
         }
         
-        NetworkManager.changePassword(oldPassword: cell0.answerField.text!, newPassword: cell1.answerField.text!) { (result) in
-            DispatchQueue.main.async {
-                if (result["status"] as! Int == 1) {
-                        self.navigationController?.popToRootViewController(animated: true)
+        if (role == Role.Consumer) {
+            NetworkManager.changePassword(oldPassword: cell0.answerField.text!, newPassword: cell1.answerField.text!) { (result) in
+                DispatchQueue.main.async {
+                    if (result["status"] as! Int == 1) {
+                            self.navigationController?.popToRootViewController(animated: true)
+                    }
+                    else if (result["status"] as! Int == -1) {
+                        GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                    }
+                    else {
+                        GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
+                    }
                 }
-                else if (result["status"] as! Int == -1) {
-                    GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
-                }
-                else {
-                    GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
+            }
+        }
+        else {
+            NetworkManager.changeUserPassword(oldPassword: cell0.answerField.text!, newPassword: cell1.answerField.text!) { (result) in
+                DispatchQueue.main.async {
+                    if (result["status"] as! Int == 1) {
+                            self.navigationController?.popToRootViewController(animated: true)
+                    }
+                    else if (result["status"] as! Int == -1) {
+                        GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                    }
+                    else {
+                        GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
+                    }
                 }
             }
         }
