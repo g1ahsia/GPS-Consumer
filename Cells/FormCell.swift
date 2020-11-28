@@ -130,7 +130,7 @@ class FormCell: UITableViewCell {
 
         answerField.leftAnchor.constraint(equalTo: fieldLabel.rightAnchor, constant: 16).isActive = true
         answerField.topAnchor.constraint(equalTo: self.topAnchor, constant: 16).isActive = true
-        answerField.widthAnchor.constraint(equalToConstant: 180).isActive = true
+        answerField.widthAnchor.constraint(equalToConstant: 260).isActive = true
         answerField.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         arrowRight.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true

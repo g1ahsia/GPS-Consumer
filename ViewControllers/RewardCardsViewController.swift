@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class RewardCardsViewController: UIViewController {
-    var rewardCards = [RewardCard]()
+    var rewardCards = [UsedRewardCard]()
     var heightOfRewardCard = CGFloat(0)
     var id : Int?
     var purpose : ConsumerSearchPurpose?
@@ -50,7 +50,9 @@ class RewardCardsViewController: UIViewController {
             
             NetworkManager.fetchUsedRewardCard { (rewardCards) in
                 self.rewardCards = rewardCards
-                self.rewardCardTableView.reloadData()
+                DispatchQueue.main.async {
+                    self.rewardCardTableView.reloadData()
+                }
             }
 //            rewardCards = [RewardCard.init(id: 1, templateId: 1, name: "綠之集點卡", threshold: 15, currentPoint: 15, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 2, templateId: 2, name: "彩虹集點卡", threshold: 20, currentPoint: 20, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 3, templateId: 3, name: "禮物集點卡", threshold: 15, currentPoint: 15, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 4, templateId: 4, name: "微笑集點卡", threshold: 30, currentPoint: 30, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14])]
         }
@@ -74,7 +76,7 @@ extension RewardCardsViewController: UITableViewDelegate, UITableViewDataSource,
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let threshold = rewardCards[indexPath.row].threshold
+        let threshold = rewardCards[indexPath.row].withdrawPoint
         var heightOfPointCollectionView = CGFloat(0.0)
         var mainHeight = CGFloat(0.0)
         var gapHeight = CGFloat(0.0)
@@ -127,10 +129,10 @@ extension RewardCardsViewController: UITableViewDelegate, UITableViewDataSource,
         let cell = tableView.dequeueReusableCell(withIdentifier: "rewardCard", for: indexPath) as! RewardCardCell
         cell.selectionStyle = .none
         cell.name = rewardCards[indexPath.row].name
-        cell.store = "松仁藥局"
+        cell.store = rewardCards[indexPath.row].store
         cell.templateId = rewardCards[indexPath.row].templateId
-        cell.threshold = rewardCards[indexPath.row].threshold
-        cell.currentPoint = rewardCards[indexPath.row].currentPoint
+        cell.threshold = rewardCards[indexPath.row].withdrawPoint
+        cell.currentPoint = rewardCards[indexPath.row].withdrawPoint
         if (purpose == ConsumerSearchPurpose.LookUp) {
             cell.isUsed = true
         }

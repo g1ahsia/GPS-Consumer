@@ -188,8 +188,9 @@ class RewardCardCell: UITableViewCell {
             if (isUsed) {
                 validityBackground.widthAnchor.constraint(equalToConstant: 65).isActive = true
                 validityBackground.backgroundColor = SHUTTLE_GREY
-                validityLabel.isHidden = true
-                validityLabel_not.isHidden = false
+                validityLabel.isHidden = false
+                validityLabel_not.isHidden = true
+                validityLabel.text = "已兌換"
             }
             else {
                 if (threshold != currentPoint) {
@@ -203,6 +204,7 @@ class RewardCardCell: UITableViewCell {
                     validityBackground.backgroundColor = ATLANTIS_GREEN
                     validityLabel.isHidden = false
                     validityLabel_not.isHidden = true
+                    validityLabel.text = "可兌換"
                 }
             }
         }

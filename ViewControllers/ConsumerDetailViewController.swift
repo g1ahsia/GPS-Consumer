@@ -12,4 +12,5 @@ import UIKit
 
 class ConsumerDetailViewController: UIViewController {
     var id : Int?
+    var mobilePhone : String?
 }

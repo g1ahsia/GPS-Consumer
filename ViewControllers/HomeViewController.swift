@@ -8,9 +8,98 @@
 
 import Foundation
 import UIKit
+import HealthKit
+
+//class HealthKitManager: NSObject {
+//
+//    static let healthKitStore = HKHealthStore()
+//
+//    static func authorizeHealthKit() {
+//
+//        let healthKitTypes: Set = [
+//            HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!,
+//        ]
+//
+//        healthKitStore.requestAuthorization(toShare: healthKitTypes,
+//                                                read: healthKitTypes) { (success, error) in
+//            if (success) {
+//
+//            }
+//            else {
+//                print (error as Any)
+//            }
+//        }
+//    }
+//}
 
 class HomeViewController: UIViewController {
     
+    let typesToShare : Set = [
+        HKSampleType.workoutType()
+    ]
+
+    let typesToRead: Set = [
+        HKQuantityType.quantityType(forIdentifier: .heartRate)!,
+        HKQuantityType.quantityType(forIdentifier: .bodyTemperature)!,
+        HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!
+    ]
+    
+    var healthStore = HKHealthStore()
+    
+    let health: HKHealthStore = HKHealthStore()
+    let heartRateUnit:HKUnit = HKUnit(from: "count/min")
+    let heartRateType:HKQuantityType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!
+    var heartRateQuery:HKQuery?
+    
+    
+    func createStreamingQuery() -> HKQuery
+    {
+        let noon = Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: noon)
+        let queryPredicate  = HKQuery.predicateForSamples(withStart: yesterday, end: Date(), options: [])
+        
+        let query : HKAnchoredObjectQuery = HKAnchoredObjectQuery(type: self.heartRateType, predicate: queryPredicate, anchor: nil, limit: Int(HKObjectQueryNoLimit)) { (query, samples, deletedObjects, anchor, error) in
+        
+            if let errorFound:NSError = error as NSError?
+            {
+                print("query error: \(errorFound.localizedDescription)")
+            }
+            else
+            {
+                //printing heart rate
+                if let samples = samples as? [HKQuantitySample]
+                {
+                    if let quantity = samples.last?.quantity
+                    {
+                        print("heartttttttt \(quantity.doubleValue(for: self.heartRateUnit))")
+                    }
+                }
+            }
+        }
+
+//        query.updateHandler =
+//            { (query:HKAnchoredObjectQuery, samples:[HKSample]?, deletedObjects:[HKDeletedObject]?, anchor:HKQueryAnchor?, error:NSError?) -> Void in
+//
+//                if let errorFound:NSError = error
+//                {
+//                    print("query-handler error : \(errorFound.localizedDescription)")
+//                }
+//                else
+//                {
+//                    //printing heart rate
+//                    if let samples = samples as? [HKQuantitySample]
+//                    {
+//                        if let quantity = samples.last?.quantity
+//                        {
+//                            print("\(quantity.doubleValueForUnit(self.heartRateUnit))")
+//                        }
+//                    }
+//                }//eo-non_error
+//        }//eo-query-handler
+
+        return query
+    }
+
     var missions = [Mission]()
     
     var merchandises = [Merchandise]()
@@ -189,6 +278,17 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = SNOW
+        
+        healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { (success, error) in
+            if (success) {
+                let query = self.createStreamingQuery()
+                self.health.execute(query)
+            }
+            else {
+                print (error as Any)
+            }
+        }
+        
         
         var image = UIImage(#imageLiteral(resourceName: "ic_fill_add"))
         image = image.withRenderingMode(.alwaysOriginal)
@@ -550,7 +650,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
             let cell = tableView.dequeueReusableCell(withIdentifier: "rewardCard", for: indexPath) as! RewardCardCell
             cell.selectionStyle = .none
             cell.name = rewardCards[indexPath.row].name
-            cell.store = "松仁藥局"
+            cell.store = rewardCards[indexPath.row].store
             cell.templateId = rewardCards[indexPath.row].templateId
             cell.threshold = rewardCards[indexPath.row].threshold
             cell.currentPoint = rewardCards[indexPath.row].currentPoint
