@@ -91,10 +91,10 @@ class CouponCell: UITableViewCell {
 //        if let image = mainImage {
 //            mainImageView.image = image
 //        }
-        if let imageUrl = imageUrl {
-            mainImageView.downloaded(from: imageUrl) {
-            }
-        }
+//        if let imageUrl = imageUrl {
+//            mainImageView.downloaded(from: imageUrl) {
+//            }
+//        }
         if let id = id {
         }
 
@@ -189,4 +189,32 @@ class CouponCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        super .prepareForReuse()
+        imageUrl = nil
+        mainImageView.image = nil
+    }
+
+    
+    func setImage() {
+        if imageUrl != nil {
+            DispatchQueue.main.async {
+                let jsonUrlString = self.imageUrl!
+                guard let url = URL(string: jsonUrlString) else { return }
+                URLSession.shared.dataTask(with: url) { (data, response, err) in
+                    guard let data = data else { return }
+
+                    if err == nil {
+                        let image = UIImage(data: data)
+
+                        DispatchQueue.main.async {
+                            self.mainImageView.image = image
+                        }
+                    }
+                }.resume()
+            }
+        }
+    }
+
 }

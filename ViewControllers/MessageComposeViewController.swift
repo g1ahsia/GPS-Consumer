@@ -14,7 +14,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     var role : Role?
     var consumer : Consumer?
     var threadId : Int?
-    var thread = Thread.init(id: 0, type: 0, isRead: false, sender: "", message: "", updatedDate: "")
+    var thread = Thread.init(id: 0, type: 0, isRead: 0, sender: "", message: "", updatedDate: "")
     var attachedImages = [UIImage]()
     
     @IBOutlet weak var composeViewBottomConstraint: NSLayoutConstraint!
@@ -99,7 +99,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         textLabel.isHidden = true
         return textLabel
     }()
-
 
     var typeSelection : UIButton = {
         var button =  UIButton()
@@ -219,7 +218,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name:UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name:UIResponder.keyboardWillHideNotification, object: nil)
-
         view.backgroundColor = UIColor .white
         view .addSubview(cancel)
         view .addSubview(header)
@@ -263,7 +261,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     }
     
     @objc private func attachButtonTapped(sender: UIButton!) {
-        
         let alert = UIAlertController(title: "選擇圖檔", message: "", preferredStyle: .actionSheet)
 
         alert.addAction(UIAlertAction(title: "拍照", style: .default , handler:{ (UIAlertAction)in
@@ -301,7 +298,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc private func sendButtonTapped(sender: UIButton!) {
-        print("sending message")
         ATTACHMENTS = []
         for imageView in attachedImageViews {
             attachedImages.append(imageView.image!)
@@ -323,6 +319,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
             self.sendMessage()
         }
     }
+    
     private func sendMessage() {
         if (messageType == MessageType.New ||
             messageType == MessageType.Prescription) {

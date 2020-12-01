@@ -15,7 +15,7 @@ class ThreadCell: UITableViewCell {
     var role : Role?
     var message : String?
     var sender : String?
-    var isRead : Bool?
+    var isRead : Int?
     var updatedDate : String?
     var attachmentImage : UIImage?
         
@@ -97,6 +97,18 @@ class ThreadCell: UITableViewCell {
             if (role == Role.Consumer) {
                 senderLabel.isHidden = true
                 subjectLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant:16).isActive = true
+                
+                if let isRead = isRead {
+                    if (isRead == 1 ||
+                        isRead == 3) {
+                        messageView.font = UIFont(name: "NotoSansTC-Regular", size: 15)
+                    }
+                    else {
+                        messageView.font = UIFont(name: "NotoSansTC-Bold", size: 15)
+                    }
+                    
+                }
+
             }
             else if (role == Role.MemberStore) {
                 senderLabel.isHidden = false
@@ -105,6 +117,18 @@ class ThreadCell: UITableViewCell {
                 senderLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
                 senderLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
                 subjectLabel.topAnchor.constraint(equalTo: senderLabel.bottomAnchor, constant: 4).isActive = true
+                
+                if let isRead = isRead {
+                    if (isRead == 2 ||
+                        isRead == 3) {
+                        messageView.font = UIFont(name: "NotoSansTC-Regular", size: 15)
+                    }
+                    else {
+                        messageView.font = UIFont(name: "NotoSansTC-Bold", size: 15)
+                    }
+                    
+                }
+
 
             }
         }
@@ -119,15 +143,6 @@ class ThreadCell: UITableViewCell {
         }
         if let image = attachmentImage {
             attachmentImageView.image = image
-        }
-        if let isRead = isRead {
-            if (isRead) {
-                messageView.font = UIFont(name: "NotoSansTC-Regular", size: 15)
-            }
-            else {
-                messageView.font = UIFont(name: "NotoSansTC-Bold", size: 15)
-            }
-            
         }
 
 

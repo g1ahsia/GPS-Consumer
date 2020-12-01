@@ -631,6 +631,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
             cell.imageUrl = coupons[indexPath.row].imageUrl
             cell.isUsed = false
             cell.layoutSubviews()
+            cell.setImage()
             
 //            if (indexPath.row == 1) {
 //                cell.mainImage = #imageLiteral(resourceName: "Banner-2")
@@ -735,6 +736,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         cell.name = merchandises[indexPath.row].name
         cell.price = "NT$\(Int(merchandises[indexPath.row].price))"
         cell.imageUrls = merchandises[indexPath.row].imageUrls
+        cell.setImage()
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

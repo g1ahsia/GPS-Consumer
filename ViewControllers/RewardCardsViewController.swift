@@ -9,7 +9,8 @@ import Foundation
 import UIKit
 
 class RewardCardsViewController: UIViewController {
-    var rewardCards = [UsedRewardCard]()
+    var rewardCards = [RewardCard]()
+    var usedRewardCards = [UsedRewardCard]()
     var heightOfRewardCard = CGFloat(0)
     var id : Int?
     var purpose : ConsumerSearchPurpose?
@@ -38,27 +39,24 @@ class RewardCardsViewController: UIViewController {
         rewardCardTableView.tableFooterView = UIView(frame: .zero)
         rewardCardTableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 20))
         setupLayout()
-
-        //        NetworkManager.fetchRewardCards() { (rewardCards) in
-        //            self.rewardCards = rewardCards
-        //            DispatchQueue.main.async {
-        //                self.rewardCardTableView.reloadData()
-        //            }
-        //        }
         if (purpose == ConsumerSearchPurpose.LookUp) {
             title = "商品兌換紀錄"
             
-            NetworkManager.fetchUsedRewardCard { (rewardCards) in
+            NetworkManager.fetchUsedRewardCards { (rewardCards) in
+                self.usedRewardCards = rewardCards
+                DispatchQueue.main.async {
+                    self.rewardCardTableView.reloadData()
+                }
+            }
+        }
+        else {
+            title = "請選擇一張集點卡"
+            NetworkManager.fetchConsumerRewardCards(id: id!) { (rewardCards) in
                 self.rewardCards = rewardCards
                 DispatchQueue.main.async {
                     self.rewardCardTableView.reloadData()
                 }
             }
-//            rewardCards = [RewardCard.init(id: 1, templateId: 1, name: "綠之集點卡", threshold: 15, currentPoint: 15, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 2, templateId: 2, name: "彩虹集點卡", threshold: 20, currentPoint: 20, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 3, templateId: 3, name: "禮物集點卡", threshold: 15, currentPoint: 15, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 4, templateId: 4, name: "微笑集點卡", threshold: 30, currentPoint: 30, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14])]
-        }
-        else {
-            title = "請選擇一張集點卡"
-//            rewardCards = [RewardCard.init(id: 1, templateId: 1, name: "綠之集點卡", threshold: 15, currentPoint: 9, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 2, templateId: 2, name: "彩虹集點卡", threshold: 20, currentPoint: 15, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 3, templateId: 3, name: "禮物集點卡", threshold: 15, currentPoint: 10, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14]), RewardCard.init(id: 4, templateId: 4, name: "微笑集點卡", threshold: 30, currentPoint: 10, description: "集滿點數即可兌換商品。", merchandises: [1, 12, 13, 14])]
         }
 
     }
@@ -72,11 +70,23 @@ class RewardCardsViewController: UIViewController {
 
 extension RewardCardsViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return rewardCards.count
+        if (purpose == ConsumerSearchPurpose.LookUp) {
+            return usedRewardCards.count
+        }
+        else if (purpose == ConsumerSearchPurpose.SendPoints) {
+            return rewardCards.count
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let threshold = rewardCards[indexPath.row].withdrawPoint
+        var threshold = 0;
+        if (purpose == ConsumerSearchPurpose.LookUp) {
+            threshold = usedRewardCards[indexPath.row].withdrawPoint
+        }
+        else if (purpose == ConsumerSearchPurpose.SendPoints) {
+            threshold = rewardCards[indexPath.row].threshold
+        }
         var heightOfPointCollectionView = CGFloat(0.0)
         var mainHeight = CGFloat(0.0)
         var gapHeight = CGFloat(0.0)
@@ -128,11 +138,20 @@ extension RewardCardsViewController: UITableViewDelegate, UITableViewDataSource,
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "rewardCard", for: indexPath) as! RewardCardCell
         cell.selectionStyle = .none
-        cell.name = rewardCards[indexPath.row].name
-        cell.store = rewardCards[indexPath.row].store
-        cell.templateId = rewardCards[indexPath.row].templateId
-        cell.threshold = rewardCards[indexPath.row].withdrawPoint
-        cell.currentPoint = rewardCards[indexPath.row].withdrawPoint
+        if (purpose == ConsumerSearchPurpose.LookUp) {
+            cell.name = usedRewardCards[indexPath.row].name
+            cell.store = usedRewardCards[indexPath.row].store
+            cell.templateId = usedRewardCards[indexPath.row].templateId
+            cell.threshold = usedRewardCards[indexPath.row].withdrawPoint
+            cell.currentPoint = usedRewardCards[indexPath.row].withdrawPoint
+        }
+        else if (purpose == ConsumerSearchPurpose.SendPoints) {
+            cell.name = rewardCards[indexPath.row].name
+            cell.store = rewardCards[indexPath.row].store
+            cell.templateId = rewardCards[indexPath.row].templateId
+            cell.threshold = rewardCards[indexPath.row].threshold
+            cell.currentPoint = rewardCards[indexPath.row].currentPoint
+        }
         if (purpose == ConsumerSearchPurpose.LookUp) {
             cell.isUsed = true
         }
@@ -154,9 +173,29 @@ extension RewardCardsViewController: UITableViewDelegate, UITableViewDataSource,
         
         if (purpose == ConsumerSearchPurpose.LookUp) {
         }
-        else {
-            GlobalVariables.showAlertWithOptions(title: MSG_TITLE_SEND_POINTS, message: "發送\(self.points!)點到此張集點卡？", confirmString: MSG_SEND_POINTS, vc: self) {
-                self.navigationController?.popViewController(animated: true)
+        else if (purpose == ConsumerSearchPurpose.SendPoints)
+        {
+            GlobalVariables.showAlertWithOptions(title: MSG_TITLE_SEND_POINTS, message: "發送\(self.points!)點到此張集點卡？", confirmString: MSG_SEND_POINTS, vc: self) { [self] in
+                
+                NetworkManager.depositForConsumer(consumerId: id!, rewardCardId: rewardCards[indexPath.row].id, points: self.points!, completionHandler: { (result) in
+                    DispatchQueue.main.async {
+                        if (result["status"] as! Int == 1) {
+                            GlobalVariables.showAlert(title: MSG_TITLE_SEND_POINTS, message: MSG_SENT_POINTS, vc: self)
+                            NetworkManager.fetchConsumerRewardCards(id: id!) { (rewardCards) in
+                                self.rewardCards = rewardCards
+                                DispatchQueue.main.async {
+                                    self.rewardCardTableView.reloadData()
+                                }
+                            }
+                        }
+                        else if (result["status"] as! Int == -1) {
+                            GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                        }
+                        else {
+                            GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
+                        }
+                    }
+                })
             }
         }
 

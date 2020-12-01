@@ -71,6 +71,7 @@ extension SearchResultViewController: UICollectionViewDelegate, UICollectionView
         cell.name = merchandises[indexPath.row].name
         cell.price = "\(merchandises[indexPath.row].price)"
         cell.imageUrls = merchandises[indexPath.row].imageUrls
+        cell.setImage()
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
