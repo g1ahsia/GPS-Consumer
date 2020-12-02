@@ -1,35 +1,26 @@
 //
 //  MessageCell.swift
-//  TableInTable
+//  GPS
 //
-//  Created by Michał Kaczmarek on 26.09.2017.
-//  Copyright © 2017 Michał Kaczmarek. All rights reserved.
+//  Created by Allen Hsiao on 2020/6/29.
+//  Copyright © 2020 Allen Hsiao. All rights reserved.
 //
 
+import Foundation
 import UIKit
 
-class myTableView : UITableView {
-    override var intrinsicContentSize: CGSize {
-        self.layoutIfNeeded()
-        return self.contentSize
-    }
-    
-    override var contentSize: CGSize {
-        didSet{
-            self.invalidateIntrinsicContentSize()
-        }
-    }
-}
 
 class MessageCell: UITableViewCell {
-    
-//    var myTableView: OwnTableView = OwnTableView()
+    var subject : String?
     var sender : String?
     var message : String?
     var date : String?
-    var imageUrls = [String]()
-    var number: Int!
+    var attachments = [String]()
+    var attachedImages = [UIImage]()
+    weak var viewController : UIViewController?
+    var bottomConstraint: NSLayoutConstraint?
 
+    
     var senderLabel : UILabel = {
         var textLabel = UILabel()
         textLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -62,52 +53,27 @@ class MessageCell: UITableViewCell {
         textLabel.textColor = MYTLE
         return textLabel
     }()
+        
+    var attachmentImageViews = [UIImageView]()
+
     
-    lazy var imageTableView : myTableView = {
-        var tableView = myTableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-//        tableView.rowHeight = UITableView.UITableViewAutomaticDimension
-//        tableView.estimatedRowHeight = 300
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(ImageCell.self, forCellReuseIdentifier: "image")
-        tableView.backgroundColor = .clear
-        tableView.isScrollEnabled = false
-        return tableView
-    }()
-
-
-
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = UIColor.brown
-        setupView()
-        imageTableView.reloadData()
+        super.init(style: style, reuseIdentifier : reuseIdentifier)
+        self.backgroundColor = .clear
+
+        self.contentView.addSubview(senderLabel)
+        self.contentView.addSubview(messageView)
+        self.contentView.addSubview(dateLabel)
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
     }
-    
-    func setupView() {
-//        myTableView.delegate = self
-//        myTableView.dataSource = self
-//        myTableView.separatorStyle = .singleLineEtched
-//        myTableView.backgroundColor = UIColor.blue
-//        myTableView.register(ImageCell.self, forCellReuseIdentifier: "image")
-//        myTableView.isScrollEnabled = false
-//        myTableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        
-        addSubview(senderLabel)
-        addSubview(messageView)
-        addSubview(dateLabel)
-        addSubview(imageTableView)
-        
-    
-    }
+
     
     override func layoutSubviews() {
+        super .layoutSubviews()
         if let sender = sender {
             senderLabel.text = sender
         }
@@ -117,88 +83,105 @@ class MessageCell: UITableViewCell {
         if let date = date {
             dateLabel.text = date
         }
+        for imageView in attachmentImageViews {
+            imageView.removeFromSuperview()
+        }
 
-//        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: senderLabel)
-
-        addConstraint(NSLayoutConstraint(item: senderLabel, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 16))
+        bottomConstraint?.isActive = false
         
-        addConstraint(NSLayoutConstraint(item: senderLabel, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1.0, constant: 16))
+        if attachedImages.count > 0 {
+            attachmentImageViews.removeAll()
+            for attachedImage in attachedImages {
+                let imageView = UIImageView(image: attachedImage)
+//                imageView.contentMode = .scaleAspectFit
+                imageView.isUserInteractionEnabled = true
+                imageView.translatesAutoresizingMaskIntoConstraints = false
+                attachmentImageViews.append(imageView)
+                
+                let tapImageView = MyTapGestureRecognizer(target: self, action: #selector(handleTap))
+                tapImageView.imageView = imageView
+                imageView.addGestureRecognizer(tapImageView)
 
-        addConstraint(NSLayoutConstraint(item: senderLabel, attribute: .width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 200))
-//
-        addConstraint(NSLayoutConstraint(item: senderLabel, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 20))
-//
-//        addConstraintsWithFormat("H:|-16-[v0]-16-|", views: messageView)
-//
-        addConstraint(NSLayoutConstraint(item: messageView, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 40))
+                self.contentView.addSubview(imageView)
+            }
+            for index in 0..<attachedImages.count {
+                if (index == 0) {
+                    attachmentImageViews[index].topAnchor.constraint(equalTo: messageView.bottomAnchor, constant: 16).isActive = true
+                }
+                else {
+                    attachmentImageViews[index].topAnchor.constraint(equalTo: attachmentImageViews[index-1].bottomAnchor, constant: 5).isActive = true
+                }
+                attachmentImageViews[index].leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
+                attachmentImageViews[index].rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -16).isActive = true
+                attachmentImageViews[index].heightAnchor.constraint(equalTo: attachmentImageViews[index].widthAnchor, multiplier: (attachmentImageViews[index].image?.size.height)!/(attachmentImageViews[index].image?.size.width)!).isActive = true
+
+                if (index == attachedImages.count - 1) {
+                    bottomConstraint = attachmentImageViews[index].bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16)
+//                    attachmentImageViews[index].bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
+                    bottomConstraint?.isActive = true
+                }
+            }
+        }
+        else {
+            if (attachments.count > 0) {
+                bottomConstraint = messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -200)
+//            messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
+            }
+            else {
+                bottomConstraint = messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16)
+            }
+            bottomConstraint?.isActive = true
+        }
         
-        addConstraint(NSLayoutConstraint(item: messageView, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1.0, constant: 16))
+        senderLabel.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
+        senderLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16).isActive = true
+        senderLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        senderLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
-        addConstraint(NSLayoutConstraint(item: messageView, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1.0, constant: -16))
+        messageView.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
+        messageView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 40).isActive = true
+        messageView.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -16).isActive = true
 
-//
-////        addConstraintsWithFormat("H:|-16-[v0]-20-|", views: dateLabel)
-//
-        addConstraint(NSLayoutConstraint(item: dateLabel, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 16))
-
-        addConstraint(NSLayoutConstraint(item: dateLabel, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1.0, constant: -20))
-
-        addConstraint(NSLayoutConstraint(item: dateLabel, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 200))
-//
-//
-//        addConstraintsWithFormat("H:|-30-[v0]-30-|", views: myTableView)
-
-        addConstraint(NSLayoutConstraint(item: imageTableView, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1.0, constant: 16))
-        
-        addConstraint(NSLayoutConstraint(item: imageTableView, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1.0, constant: -16))
-
-        addConstraint(NSLayoutConstraint(item: imageTableView, attribute: .top, relatedBy: .equal, toItem: messageView, attribute: .bottom, multiplier: 1.0, constant: 16))
-        addConstraint(NSLayoutConstraint(item: imageTableView, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1.0, constant: -16))
-        
-
+        dateLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16).isActive = true
+        dateLabel.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -20).isActive = true
+        dateLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
+    
     }
     
-    override func prepareForReuse() {
-        super .prepareForReuse()
-        imageUrls = []
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
+    
+    @objc private func replyButtonTapped(sender: UIButton!) {
 
+    }
+    @objc func handleTap(gestureRecognizer: MyTapGestureRecognizer) {
+        let imagesVC = ImagesViewController()
+        imagesVC.attachedImages = self.attachedImages
+        imagesVC.modalPresentationStyle = .overFullScreen
+        if let imageView = gestureRecognizer.imageView {
+            imagesVC.currentIndex = attachmentImageViews.firstIndex(of: imageView)!
+            self.viewController!.present(imagesVC, animated: true)
+        }
+    }
 }
 
-extension MessageCell: UITableViewDelegate {
-    
-}
-
-extension MessageCell: UITableViewDataSource {
-    
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return 1
+//extension MessageContentCell: UITextViewDelegate {
+//
+//    func textViewDidChange(_ textView: UITextView) {
+//        self.adjustTextViewHeight()
 //    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if nil == number {
-//            number = 1 + Int(arc4random_uniform(UInt32(10 - 1 + 1)))
-//        }
-//        return number
-        print("number of images \(imageUrls.count)")
-        return imageUrls.count
+//
+//    func adjustTextViewHeight() {
+//        let fixedWidth = messageView.frame.size.width
+//        let newSize = messageView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+////        self.textHeightConstraint.constant = newSize.height
+//        self.contentView.layoutIfNeeded()
+//    }
+//
+//}
 
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "image", for: indexPath) as! ImageCell
-        print("index is \(indexPath.row)")
-        cell.imageUrl = imageUrls[indexPath.row]
-        cell.setImage()
-        cell.layoutIfNeeded()
-        return cell
-    }
+class MyTapGestureRecognizer: UITapGestureRecognizer {
+    var imageView: UIImageView?
 }
