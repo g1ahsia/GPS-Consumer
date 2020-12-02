@@ -3,7 +3,6 @@ import Foundation
 import UIKit
 
 class CouponCell: UITableViewCell {
-//    var mainImage : UIImage?
     var imageUrl : String?
     var id : Int?
     var store : String?
@@ -196,7 +195,6 @@ class CouponCell: UITableViewCell {
         mainImageView.image = nil
     }
 
-    
     func setImage() {
         if imageUrl != nil {
             DispatchQueue.main.async {
