@@ -43,7 +43,7 @@ class MessageDetailViewController: UIViewController {
         view.backgroundColor = SNOW
         view.addSubview(messageDetailTableView)
         setupLayout()
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadData), name:Notification.Name("AddedMessage"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.popToRoot), name:Notification.Name("AddedMessage"), object: nil)
     }
     
     @objc private func addButtonTapped() { }
@@ -101,12 +101,17 @@ class MessageDetailViewController: UIViewController {
                                     
                                     UIView.performWithoutAnimation({
                                         let loc = self.messageDetailTableView.contentOffset
+                                        self.messageDetailTableView.beginUpdates()
                                         self.messageDetailTableView.reloadRows(at: [indexPath], with: .none)
                                         self.messageDetailTableView.contentOffset = loc
+                                        self.messageDetailTableView.endUpdates()
                                     })
 
                                 })
                             }
+                        }
+                        else {
+                            print("CANNOT DOWNLOAD IMAGE \(location)")
                         }
                     }
                 }
@@ -236,5 +241,10 @@ extension MessageDetailViewController: UITableViewDelegate, UITableViewDataSourc
             }
         }
     }
-
+    
+    @objc private func popToRoot() {
+        DispatchQueue.main.async {
+            self.navigationController?.popToRootViewController(animated: true)
+        }
+    }
 }

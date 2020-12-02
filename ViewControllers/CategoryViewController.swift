@@ -97,10 +97,12 @@ class CategoryViewController: UIViewController {
                     ]
         
         NetworkManager.fetchCategories() { (categories) in
-            self.gpsCategoryCellEntries = [categories[0]]
-            self.storeCategoryCellEntries = [categories[1]]
-            DispatchQueue.main.async {
-                self.categoryTableView.reloadData()
+            if (categories.count > 0) {
+                self.gpsCategoryCellEntries = [categories[0]]
+                self.storeCategoryCellEntries = [categories[1]]
+                DispatchQueue.main.async {
+                    self.categoryTableView.reloadData()
+                }
             }
         }
         setupLayout()
