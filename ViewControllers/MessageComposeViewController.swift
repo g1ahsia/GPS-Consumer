@@ -566,13 +566,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
 
         attach.centerYAnchor.constraint(equalTo: typeLabel.centerYAnchor).isActive = true
         attach.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
-//        attach.widthAnchor.constraint(equalToConstant: 30).isActive = true
-//        attach.heightAnchor.constraint(equalToConstant: 30).isActive = true
 
         line.centerYAnchor.constraint(equalTo: typeLabel.centerYAnchor).isActive = true
         line.rightAnchor.constraint(equalTo: attach.leftAnchor, constant: -10).isActive = true
-//        line.widthAnchor.constraint(equalToConstant: 30).isActive = true
-//        line.heightAnchor.constraint(equalToConstant: 30).isActive = true
 
         blackCover.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         blackCover.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
@@ -606,14 +602,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         descPlaceholder.isHidden = !textView.text.isEmpty
-//        if (textView.text.isEmpty) {
-//            send.alpha = 0.5
-//            send.isEnabled = false
-//        }
-//        else {
-//            send.alpha = 1.0
-//            send.isEnabled = true
-//        }
         enableSendButton()
         let size = CGSize(width: textView.frame.width, height: .infinity)
         let estimatedSize = textView.sizeThatFits(size)
@@ -694,9 +682,10 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         contentScrollView .addSubview(imageView)
         imageView.addSubview(delete)
         
-        imageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
-        imageView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
-        imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: image.size.height/image.size.width).isActive = true
+//        imageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
+//        imageView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
+        imageView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
         var topConstraint: NSLayoutConstraint?
         

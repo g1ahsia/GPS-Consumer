@@ -18,8 +18,6 @@ class MessageCell: UITableViewCell {
     var attachments = [String]()
     var attachedImages = [UIImage]()
     weak var viewController : UIViewController?
-    var bottomConstraint: NSLayoutConstraint?
-
     
     var senderLabel : UILabel = {
         var textLabel = UILabel()
@@ -33,7 +31,7 @@ class MessageCell: UITableViewCell {
     var messageView : UITextView = {
         var textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
-//        textView.sizeToFit()
+        textView.sizeToFit()
         textView.isScrollEnabled = false
         textView.isEditable = false
         textView.backgroundColor = .clear
@@ -68,13 +66,11 @@ class MessageCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-//        for imageView in attachmentImageViews {
-//            imageView.image = nil
-//            imageView.removeFromSuperview()
-//        }
-        attachmentImageViews.removeAll()
-        self.removeAllConstraints()
-        bottomConstraint?.isActive = false
+        for imageView in attachmentImageViews {
+            imageView.image = nil
+            imageView.removeFromSuperview()
+        }
+        attachmentImageViews.removeAll()        
     }
 
     
@@ -90,23 +86,16 @@ class MessageCell: UITableViewCell {
             dateLabel.text = date
         }
 
-        senderLabel.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
-        senderLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16).isActive = true
-        senderLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        senderLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-        
-        messageView.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
-        messageView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 40).isActive = true
-        messageView.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -16).isActive = true
-
-        dateLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16).isActive = true
-        dateLabel.rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -20).isActive = true
-        dateLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-        dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-
-        bottomConstraint?.isActive = false
+        let size = messageView.sizeThatFits(CGSize(width: self.contentView.frame.size.width - 32, height: CGFloat.greatestFiniteMagnitude))
+        senderLabel.frame = CGRect(x: 16, y: 16, width: 200, height: 20)
+        messageView.frame = CGRect(x: 16, y: 40, width: self.contentView.frame.size.width - 32, height: size.height)
+        dateLabel.frame = CGRect(x: self.contentView.frame.size.width - 20 - 200, y: 16, width: 200, height: 20)
         
         if attachedImages.count > 0 {
+            for imageView in attachmentImageViews {
+                imageView.image = nil
+                imageView.removeFromSuperview()
+            }
             attachmentImageViews.removeAll()
             for attachedImage in attachedImages {
                 let imageView = UIImageView(image: attachedImage)
@@ -123,33 +112,15 @@ class MessageCell: UITableViewCell {
             }
             for index in 0..<attachedImages.count {
                 if (index == 0) {
-                    attachmentImageViews[index].topAnchor.constraint(equalTo: messageView.bottomAnchor, constant: 16).isActive = true
+                    attachmentImageViews[index].frame = CGRect(x: 16, y: messageView.frame.origin.y + messageView.frame.size.height + 16, width: self.contentView.frame.size.width - 32, height: 200)
                 }
                 else {
-                    attachmentImageViews[index].topAnchor.constraint(equalTo: attachmentImageViews[index-1].bottomAnchor, constant: 5).isActive = true
-                }
-                attachmentImageViews[index].leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
-                attachmentImageViews[index].rightAnchor.constraint(equalTo: self.contentView.rightAnchor, constant: -16).isActive = true
-                attachmentImageViews[index].heightAnchor.constraint(equalToConstant: self.contentView.frame.size.width  * (attachmentImageViews[index].image?.size.height)!/(attachmentImageViews[index].image?.size.width)!).isActive = true
-//                attachmentImageViews[index].heightAnchor.constraint(equalTo: attachmentImageViews[index].widthAnchor, multiplier: (attachmentImageViews[index].image?.size.height)!/(attachmentImageViews[index].image?.size.width)!).isActive = true
-
-                if (index == attachedImages.count - 1) {
-                    bottomConstraint = attachmentImageViews[index].bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16)
-                    bottomConstraint?.isActive = true
+                    attachmentImageViews[index].frame = CGRect(x: 16, y: attachmentImageViews[index-1].frame.origin.y + attachmentImageViews[index-1].frame.size.height + 16, width: self.contentView.frame.size.width - 32, height: 200)
                 }
             }
         }
         else {
-//            if (attachments.count > 0) {
-//                bottomConstraint = messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -200)
-////            messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16).isActive = true
-//            }
-//            else {
-                bottomConstraint = messageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -16)
-//            }
-            bottomConstraint?.isActive = true
         }
-        
     
     }
     
@@ -171,46 +142,6 @@ class MessageCell: UITableViewCell {
     }
 }
 
-//extension MessageContentCell: UITextViewDelegate {
-//
-//    func textViewDidChange(_ textView: UITextView) {
-//        self.adjustTextViewHeight()
-//    }
-//
-//    func adjustTextViewHeight() {
-//        let fixedWidth = messageView.frame.size.width
-//        let newSize = messageView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
-////        self.textHeightConstraint.constant = newSize.height
-//        self.contentView.layoutIfNeeded()
-//    }
-//
-//}
-
 class MyTapGestureRecognizer: UITapGestureRecognizer {
     var imageView: UIImageView?
-}
-
-extension UIView {
-    
-    public func removeAllConstraints() {
-        var _superview = self.superview
-        
-        while let superview = _superview {
-            for constraint in superview.constraints {
-                
-                if let first = constraint.firstItem as? UIView, first == self {
-                    superview.removeConstraint(constraint)
-                }
-                
-                if let second = constraint.secondItem as? UIView, second == self {
-                    superview.removeConstraint(constraint)
-                }
-            }
-            
-            _superview = superview.superview
-        }
-        
-        self.removeConstraints(self.constraints)
-        self.translatesAutoresizingMaskIntoConstraints = true
-    }
 }

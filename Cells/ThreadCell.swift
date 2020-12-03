@@ -129,7 +129,6 @@ class ThreadCell: UITableViewCell {
                     
                 }
 
-
             }
         }
         if let message = message {

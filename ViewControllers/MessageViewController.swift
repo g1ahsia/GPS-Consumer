@@ -133,13 +133,17 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
             self.navigationController?.pushViewController(messageDetailVC, animated: true)
         }
         else {
-            NetworkManager.fetchStoreMessages(id: threads[indexPath.row].id) { (messages) in
-                messageDetailVC.messages = messages
-                messageDetailVC.threadId = self.threads[indexPath.row].id
-                DispatchQueue.main.async {
-                    self.navigationController?.pushViewController(messageDetailVC, animated: true)
-                }
-            }
+            
+            messageDetailVC.threadId = self.threads[indexPath.row].id
+            messageDetailVC.reloadData()
+            self.navigationController?.pushViewController(messageDetailVC, animated: true)
+//            NetworkManager.fetchStoreMessages(id: threads[indexPath.row].id) { (messages) in
+//                messageDetailVC.messages = messages
+//                messageDetailVC.threadId = self.threads[indexPath.row].id
+//                DispatchQueue.main.async {
+//                    self.navigationController?.pushViewController(messageDetailVC, animated: true)
+//                }
+//            }
         }
 
     }

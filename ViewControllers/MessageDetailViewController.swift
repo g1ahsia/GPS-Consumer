@@ -89,30 +89,33 @@ class MessageDetailViewController: UIViewController {
 
                 if let location = location {
                     if let data:Data = try? Data(contentsOf: location) {
+                        var images = cachedImages[messageId] ?? []
                         if let image:UIImage = UIImage(data: data) {
-                            var images = cachedImages[messageId] ?? []
                             images.append(image)
                             cachedImages[messageId] = images
                             
-                            if (images.count == numCachedImages[messageId]) {
-                                DispatchQueue.main.async(execute: { () -> Void in
-//                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                    print("reload cell ", String(indexPath.row))
-                                    
-                                    UIView.performWithoutAnimation({
-                                        let loc = self.messageDetailTableView.contentOffset
-                                        self.messageDetailTableView.beginUpdates()
-                                        self.messageDetailTableView.reloadRows(at: [indexPath], with: .none)
-                                        self.messageDetailTableView.contentOffset = loc
-                                        self.messageDetailTableView.endUpdates()
-                                    })
-
-                                })
-                            }
                         }
                         else {
                             print("CANNOT DOWNLOAD IMAGE \(location)")
+                            images.append(#imageLiteral(resourceName: "img_holder"))
+                            cachedImages[messageId] = images
+
                         }
+                        if (images.count == numCachedImages[messageId]) {
+                            DispatchQueue.main.async(execute: { () -> Void in
+//                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                print("reload cell ", String(indexPath.row))
+                                
+                                UIView.performWithoutAnimation({
+                                    let loc = self.messageDetailTableView.contentOffset
+                                    self.messageDetailTableView.beginUpdates()
+                                    self.messageDetailTableView.reloadRows(at: [indexPath], with: .none)
+                                    self.messageDetailTableView.contentOffset = loc
+                                    self.messageDetailTableView.endUpdates()
+                                })
+                            })
+                        }
+
                     }
                 }
             })
@@ -190,6 +193,18 @@ extension MessageDetailViewController: UITableViewDelegate, UITableViewDataSourc
         
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        let textView = UITextView()
+        textView.font = UIFont(name: "NotoSansTC-Regular", size: 15)
+        textView.textContainerInset = .zero; // fix the silly UITextView bug
+        textView.textContainer.lineFragmentPadding = 0; // fix the silly UITextView bug
+        textView.text = messages[indexPath.row].message
+        let size = textView.sizeThatFits(CGSize(width: self.view.frame.size.width - 32, height: CGFloat.greatestFiniteMagnitude))
+        let images = self.cachedImages[messages[indexPath.row].id] ?? []
+        return 16 + 40 + size.height + (CGFloat(images.count) * (200 + 16)) + 16
+    }
+    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if tableView == messageDetailTableView {
             return 64
@@ -237,6 +252,13 @@ extension MessageDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 self.messages = messages
                 DispatchQueue.main.async {
                     self.messageDetailTableView.reloadData()
+                }
+                for index in 0...messages.count - 1 {
+                    let attachments = self.messages[index].attachments
+                    let messageId = self.messages[index].id
+                    DispatchQueue.main.async {
+                        self.loadImages(attachments, indexPath: NSIndexPath(row: index, section: 0) as IndexPath, messageId: messageId)
+                    }
                 }
             }
         }
