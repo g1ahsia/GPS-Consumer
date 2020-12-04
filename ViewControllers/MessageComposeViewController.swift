@@ -14,9 +14,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     var role : Role?
     var consumer : Consumer?
     var threadId : Int?
-    var thread = Thread.init(id: 0, type: 0, isRead: 0, sender: "", message: "", updatedDate: "")
+    var thread = Thread.init(id: 0, type: 0, isRead: 0, sender: "", message: "", updatedDate: "", consumerId: 0)
     var attachedImages = [UIImage]()
-    var spinner = UIActivityIndicatorView(style: .whiteLarge)
+    var spinner = UIActivityIndicatorView(style: .gray)
     
     @IBOutlet weak var composeViewBottomConstraint: NSLayoutConstraint!
     let imagePicker = UIImagePickerController()

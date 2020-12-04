@@ -540,10 +540,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
         }
         else if (tableView == missionTableView) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "mission", for: indexPath) as! MissionCell
-            cell.mainImage = #imageLiteral(resourceName: "Facebook Mission")
+//            cell.mainImage = #imageLiteral(resourceName: "Facebook Mission")
+            cell.imageUrl = missions[indexPath.row].imageUrl
             cell.name = missions[indexPath.row].name
             cell.desc = missions[indexPath.row].desc
+            cell.mainImage = #imageLiteral(resourceName: "img_holder")
             cell.layoutSubviews()
+            cell.setImage()
             return cell
 
         }
@@ -564,6 +567,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if (tableView == couponTableView) {
+            let cell = couponTableView .cellForRow(at: indexPath) as! CouponCell
             let couponVC = CouponDetailViewController()
             couponVC.id = coupons[indexPath.row].id
             couponVC.imageUrl = coupons[indexPath.row].imageUrl
@@ -572,16 +576,22 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
             couponVC.remark = coupons[indexPath.row].remark
             couponVC.desc = coupons[indexPath.row].description
             couponVC.templateId = coupons[indexPath.row].templateId
-            if (indexPath.row == 1) {
-                couponVC.mainImage = #imageLiteral(resourceName: "Banner-2")
-            }
+            couponVC.mainImage = cell.mainImage
             self.navigationController?.pushViewController(couponVC, animated: true)
         }
         else if (tableView == missionTableView) {
+            let cell = missionTableView .cellForRow(at: indexPath) as! MissionCell
             let missionDetailVC = MissionDetailViewController()
-            missionDetailVC.mainImage = #imageLiteral(resourceName: "Facebook Mission")
-            missionDetailVC.name = "臉書粉絲團按讚"
-            missionDetailVC.desc = "凡到好藥坊粉絲團點讚，將獲得優惠券乙張"
+            missionDetailVC.mainImage = cell.mainImage
+            missionDetailVC.name = missions[indexPath.row].name
+            missionDetailVC.desc = missions[indexPath.row].desc
+            if (indexPath.row == 0) {
+                missionDetailVC.isFacebook = true
+            }
+            else {
+                missionDetailVC.isFacebook = false
+            }
+
             self.navigationController?.pushViewController(missionDetailVC, animated: true)
         }
         else if (tableView == rewardCardTableView) {

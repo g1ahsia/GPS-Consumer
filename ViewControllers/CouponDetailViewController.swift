@@ -263,6 +263,7 @@ extension CouponDetailViewController: UITableViewDelegate, UITableViewDataSource
         cell.templateId = templateId
         cell.isUsed = false
         cell.layoutSubviews()
+        cell.setImage()
         return cell
     }
 

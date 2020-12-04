@@ -18,7 +18,8 @@ class ThreadCell: UITableViewCell {
     var isRead : Int?
     var updatedDate : String?
     var attachmentImage : UIImage?
-        
+    var consumerId : Int?
+
     var subjectLabel : UILabel = {
         var textLabel = UILabel()
         textLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -87,11 +88,11 @@ class ThreadCell: UITableViewCell {
     override func layoutSubviews() {
         super .layoutSubviews()
         if let type = type {
-            if (type > 5) {
-                subjectLabel.text = MESSAGE_SUBJECTS[4]            }
-            else {
+//            if (type > 5) {
+//                subjectLabel.text = MESSAGE_SUBJECTS[4]            }
+//            else {
                 subjectLabel.text = MESSAGE_SUBJECTS[type-1]
-            }
+//            }
         }
         if let role = role {
             if (role == Role.Consumer) {
@@ -143,7 +144,6 @@ class ThreadCell: UITableViewCell {
         if let image = attachmentImage {
             attachmentImageView.image = image
         }
-
 
         subjectLabel.leftAnchor.constraint(equalTo: self.contentView.leftAnchor, constant: 16).isActive = true
         subjectLabel.topAnchor.constraint(equalTo: senderLabel.bottomAnchor, constant: 4).isActive = true

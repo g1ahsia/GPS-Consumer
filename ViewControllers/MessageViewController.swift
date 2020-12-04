@@ -107,6 +107,7 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
         cell.updatedDate = threads[indexPath.row].updatedDate
         cell.isRead = threads[indexPath.row].isRead
         cell.role = role
+        cell.consumerId = threads[indexPath.row].consumerId
         cell.layoutSubviews()
         return cell
     }
@@ -120,14 +121,8 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
         let type = threads[indexPath.row].type - 1
         messageDetailVC.title = MESSAGE_SUBJECTS[type]
         messageDetailVC.role = self.role
+        
         if (role == Role.Consumer) {
-//            NetworkManager.fetchMessages(id: threads[indexPath.row].id) { (messages) in
-//                messageDetailVC.messages = messages
-//                messageDetailVC.threadId = self.threads[indexPath.row].id
-//                DispatchQueue.main.async {
-//                    self.navigationController?.pushViewController(messageDetailVC, animated: true)
-//                }
-//            }
             messageDetailVC.threadId = self.threads[indexPath.row].id
             messageDetailVC.reloadData()
             self.navigationController?.pushViewController(messageDetailVC, animated: true)
@@ -136,14 +131,9 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
             
             messageDetailVC.threadId = self.threads[indexPath.row].id
             messageDetailVC.reloadData()
+            let cell = threadTableView.cellForRow(at: indexPath) as! ThreadCell
+            messageDetailVC.consumerId = cell.consumerId
             self.navigationController?.pushViewController(messageDetailVC, animated: true)
-//            NetworkManager.fetchStoreMessages(id: threads[indexPath.row].id) { (messages) in
-//                messageDetailVC.messages = messages
-//                messageDetailVC.threadId = self.threads[indexPath.row].id
-//                DispatchQueue.main.async {
-//                    self.navigationController?.pushViewController(messageDetailVC, animated: true)
-//                }
-//            }
         }
 
     }

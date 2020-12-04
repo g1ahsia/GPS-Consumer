@@ -6,12 +6,12 @@ class MissionCell: UITableViewCell {
     var mainImage : UIImage?
     var name : String?
     var desc : String?
+    var imageUrl : String?
         
     var mainImageView : UIImageView = {
         var imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = #imageLiteral(resourceName: "img_holder")
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
         return imageView
@@ -95,4 +95,26 @@ class MissionCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func setImage() {
+        if (imageUrl != nil) {
+            DispatchQueue.main.async {
+                let jsonUrlString = self.imageUrl
+                guard let url = URL(string: jsonUrlString!) else { return }
+                URLSession.shared.dataTask(with: url) { (data, response, err) in
+                    guard let data = data else { return }
+
+                    if err == nil {
+                        let image = UIImage(data: data)
+
+                        DispatchQueue.main.async {
+                            self.mainImage = image
+                            self.mainImageView.image = self.mainImage
+                        }
+                    }
+                }.resume()
+            }
+        }
+    }
+
 }

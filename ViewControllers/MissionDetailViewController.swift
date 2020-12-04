@@ -16,6 +16,7 @@ class MissionDetailViewController: UIViewController {
     var name : String?
     var desc : String?
     var pageIDs = [[String : String]]()
+    var isFacebook : Bool!
 
     var mainScrollView : UIScrollView = {
         var scrollView = UIScrollView()
@@ -30,6 +31,7 @@ class MissionDetailViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 5;
         imageView.clipsToBounds = true;
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
@@ -106,32 +108,34 @@ class MissionDetailViewController: UIViewController {
         loginButton.permissions = ["public_profile", "email"]
 //        view.addSubview(loginButton)
 
-        if let token = AccessToken.current,
-            !token.isExpired {
-            // User is logged in, do work such as go to next view controller.
+        if (isFacebook) {
+            if let token = AccessToken.current,
+                !token.isExpired {
+                // User is logged in, do work such as go to next view controller.
 
-            if (AccessToken.current?.hasGranted(permission: "user_likes") != nil) {
-                let graphRequest = GraphRequest(graphPath: "me/likes", parameters: ["fields":"id"])
-                let connection = GraphRequestConnection()
-                connection.add(graphRequest, completionHandler: { (connection, result, error) in
+                if (AccessToken.current?.hasGranted(permission: "user_likes") != nil) {
+                    let graphRequest = GraphRequest(graphPath: "me/likes", parameters: ["fields":"id"])
+                    let connection = GraphRequestConnection()
+                    connection.add(graphRequest, completionHandler: { (connection, result, error) in
 
-                    if error != nil {
+                        if error != nil {
 
-                        //do something with error
-                        print("error is", error!)
-                    }
-                    if let result = result as? [String : Any],
-                        let pages = result["data"] as? [[String : String]] {
-                        self.pageIDs.append(contentsOf: pages)
-                        if let paging = result["paging"] as? [String : Any],
-                            let next = paging["next"] as? String {
-                            print("next paging ", next)
-                            self.fetchMorePages(urlString: next)
+                            //do something with error
+                            print("error is", error!)
                         }
-                    }
+                        if let result = result as? [String : Any],
+                            let pages = result["data"] as? [[String : String]] {
+                            self.pageIDs.append(contentsOf: pages)
+                            if let paging = result["paging"] as? [String : Any],
+                                let next = paging["next"] as? String {
+                                print("next paging ", next)
+                                self.fetchMorePages(urlString: next)
+                            }
+                        }
 
-                })
-                connection.start()
+                    })
+                    connection.start()
+                }
             }
         }
     }
@@ -187,6 +191,9 @@ class MissionDetailViewController: UIViewController {
     
     @objc private func completeButtonTapped(sender: UIButton!) {
         
+        if (!isFacebook) {
+            return
+        }
         self.pageIDs = [[String : String]]()
         if let token = AccessToken.current,
             !token.isExpired {
@@ -285,6 +292,14 @@ class MissionDetailViewController: UIViewController {
         for dict in self.pageIDs {
             if (dict["id"] == "262951807595060") {
                 print("liked page")
+                
+                DispatchQueue.main.async {
+                    GlobalVariables.showAlert(title: MSG_TITLE_FB, message: LIKED_FACEBOOK_PAGE, vc: self)
+                    self.complete.isUserInteractionEnabled = false
+                    self.complete.alpha = 0.5
+                    self.complete.setTitle("已完成", for: .normal)
+                }
+
                 return
             }
         }

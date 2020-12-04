@@ -10,6 +10,7 @@ class CouponCell: UITableViewCell {
     var remark : String?
     var templateId : Int?
     var isUsed : Bool?
+    var mainImage : UIImage?
 
     var mainImageView : UIImageView = {
        var imageView = UIImageView()
@@ -207,7 +208,8 @@ class CouponCell: UITableViewCell {
                         let image = UIImage(data: data)
 
                         DispatchQueue.main.async {
-                            self.mainImageView.image = image
+                            self.mainImage = image
+                            self.mainImageView.image = self.mainImage
                         }
                     }
                 }.resume()

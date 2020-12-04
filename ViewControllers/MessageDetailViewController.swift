@@ -17,6 +17,7 @@ class MessageDetailViewController: UIViewController {
     var threadId : Int = 0
     var numCachedImages = [Int: Int]()
     var cachedImages = [Int: [UIImage]]()
+    var consumerId : Int?
 
 //    let navigationBar: UINavigationBar = UINavigationBar(frame: CGRect(x: 0, y: 22, width: UIScreen.main.bounds.width, height: 44))
     
@@ -43,7 +44,7 @@ class MessageDetailViewController: UIViewController {
         view.backgroundColor = SNOW
         view.addSubview(messageDetailTableView)
         setupLayout()
-        NotificationCenter.default.addObserver(self, selector: #selector(self.popToRoot), name:Notification.Name("AddedMessage"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadData), name:Notification.Name("AddedMessage"), object: nil)
     }
     
     @objc private func addButtonTapped() { }
@@ -67,7 +68,7 @@ class MessageDetailViewController: UIViewController {
     
     @objc private func customerButtonTapped() {
         let consumerDetailVC = ConsumerDetailViewController()
-        consumerDetailVC.id = 1
+        consumerDetailVC.id = consumerId!
         self.navigationController?.pushViewController(consumerDetailVC, animated: true)
     }
     
@@ -264,9 +265,9 @@ extension MessageDetailViewController: UITableViewDelegate, UITableViewDataSourc
         }
     }
     
-    @objc private func popToRoot() {
-        DispatchQueue.main.async {
-            self.navigationController?.popToRootViewController(animated: true)
-        }
-    }
+//    @objc private func popToRoot() {
+//        DispatchQueue.main.async {
+//            self.navigationController?.popToRootViewController(animated: true)
+//        }
+//    }
 }
