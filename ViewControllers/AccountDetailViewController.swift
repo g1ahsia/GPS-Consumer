@@ -67,6 +67,17 @@ class AccountDetailViewController: UIViewController {
         view.alpha = 0
         return view
     }()
+    
+    var versionLabel : UILabel = {
+        var textLabel = UILabel()
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
+        textLabel.backgroundColor = .clear
+        textLabel.font = UIFont(name: "NotoSansTC-Regular", size: 14)
+        textLabel.sizeToFit()
+        textLabel.textColor = MYTLE
+        return textLabel
+    }()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +85,7 @@ class AccountDetailViewController: UIViewController {
         title = "修改個人資料"
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
         view.addSubview(infoTableView)
+        view.addSubview(versionLabel)
         view.addSubview(save)
         infoTableView.tableFooterView = UIView(frame: .zero)
         view.addSubview(blackCover)
@@ -102,7 +114,7 @@ class AccountDetailViewController: UIViewController {
         infoTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         infoTableView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         infoTableView.heightAnchor.constraint(equalToConstant: 450).isActive = true
-        
+                
         blackCover.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         blackCover.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         blackCover.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true

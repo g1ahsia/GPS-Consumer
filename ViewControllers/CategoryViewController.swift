@@ -111,11 +111,13 @@ class CategoryViewController: UIViewController {
     }
     
     @objc private func searchButtonTapped() {
+        search.isUserInteractionEnabled = false
         let searchResultVC = SearchResultViewController()
         NetworkManager.fetchMerchandisesByCategory(Id: selectedCell.category.id) { (merchandises) in
             DispatchQueue.main.async {
                 searchResultVC.merchandises = merchandises
                 self.navigationController?.pushViewController(searchResultVC, animated: true)
+                self.search.isUserInteractionEnabled = true
             }
         }
     }

@@ -33,6 +33,8 @@
 	<string>938050046677971</string>
 	<key>FacebookDisplayName</key>
 	<string>GPS</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -116,11 +118,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
-	<key>NSHealthShareUsageDescription</key>
-	<string>obtain mindfulness data</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>obtain mindfulness data</string>
 </dict>
 </plist>

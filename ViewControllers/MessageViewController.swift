@@ -149,7 +149,6 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
     }
     
     @objc private func reloadData () {
-        
         if (role == Role.Consumer) {
             NetworkManager.fetchThreads() { (threads) in
                 self.threads = threads
@@ -167,8 +166,4 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
             }
         }
     }
-    
 }
-
-
-

@@ -16,6 +16,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     var threadId : Int?
     var thread = Thread.init(id: 0, type: 0, isRead: 0, sender: "", message: "", updatedDate: "")
     var attachedImages = [UIImage]()
+    var spinner = UIActivityIndicatorView(style: .whiteLarge)
     
     @IBOutlet weak var composeViewBottomConstraint: NSLayoutConstraint!
     let imagePicker = UIImagePickerController()
@@ -241,6 +242,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         blackCover.addGestureRecognizer(tap)
         
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(spinner)
+
         self.setupLayout()
         
         hideKeyboardWhenTappedOnView()
@@ -298,6 +302,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     }
 
     @objc private func sendButtonTapped(sender: UIButton!) {
+        spinner.startAnimating()
+        view.isUserInteractionEnabled = false
+        
         ATTACHMENTS = []
         for imageView in attachedImageViews {
             attachedImages.append(imageView.image!)
@@ -338,6 +345,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                         else {
                             GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
+                        self.spinner.stopAnimating()
+                        self.view.isUserInteractionEnabled = true
                     }
                 }
             }
@@ -356,6 +365,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                         else {
                             GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
+                        self.spinner.stopAnimating()
+                        self.view.isUserInteractionEnabled = true
                     }
                 }
 
@@ -377,6 +388,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                         else {
                             GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
+                        self.spinner.stopAnimating()
+                        self.view.isUserInteractionEnabled = true
+
                     }
                 }
             }
@@ -396,6 +410,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                             else {
                                 GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                             }
+                            self.spinner.stopAnimating()
+                            self.view.isUserInteractionEnabled = true
                         }
                     }
                 }
@@ -408,6 +424,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                                 self.send.isEnabled = true
                                 self.dismiss(animated: true) {
                                 }
+                                self.spinner.stopAnimating()
+                                self.view.isUserInteractionEnabled = true
                             }
                         }
                     }
@@ -586,6 +604,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         lineCollectionViewBottomConstraint1 = lineImageCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: UIScreen.main.bounds.width)
         lineCollectionViewBottomConstraint2 = lineImageCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         lineCollectionViewBottomConstraint1?.isActive = true
+        
+        spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
     }
     

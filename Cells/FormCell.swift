@@ -127,14 +127,14 @@ class FormCell: UITableViewCell {
         fieldLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16).isActive = true
         fieldLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 16).isActive = true
         fieldLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-
-        answerField.leftAnchor.constraint(equalTo: fieldLabel.rightAnchor, constant: 16).isActive = true
-        answerField.topAnchor.constraint(equalTo: self.topAnchor, constant: 16).isActive = true
-        answerField.widthAnchor.constraint(equalToConstant: 260).isActive = true
-        answerField.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         arrowRight.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         arrowRight.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -8).isActive = true
+        
+        answerField.leftAnchor.constraint(equalTo: fieldLabel.rightAnchor, constant: 8).isActive = true
+        answerField.topAnchor.constraint(equalTo: self.topAnchor, constant: 16).isActive = true
+        answerField.widthAnchor.constraint(equalToConstant: 260).isActive = true
+        answerField.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         arrowDown.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         arrowDown.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -8).isActive = true

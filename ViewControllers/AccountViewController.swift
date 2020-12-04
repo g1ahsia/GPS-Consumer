@@ -23,6 +23,16 @@ class AccountViewController: UIViewController {
 
     }()
     
+    var versionLabel : UILabel = {
+        var textLabel = UILabel()
+        textLabel.translatesAutoresizingMaskIntoConstraints = false
+        textLabel.backgroundColor = .clear
+        textLabel.font = UIFont(name: "NotoSansTC-Regular", size: 14)
+        textLabel.sizeToFit()
+        textLabel.textColor = MYTLE
+        return textLabel
+    }()
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -36,8 +46,10 @@ class AccountViewController: UIViewController {
         view.backgroundColor = SNOW
         title = "我的帳號"
         view.addSubview(accountTableView)
+        view.addSubview(versionLabel)
         accountTableView.tableFooterView = UIView(frame: .zero)
         setupLayout()
+        
     }
     
     private func setupLayout() {
@@ -45,6 +57,10 @@ class AccountViewController: UIViewController {
         accountTableView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
         accountTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         accountTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        versionLabel.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -16).isActive = true
+        versionLabel.topAnchor.constraint(equalTo: accountTableView.bottomAnchor).isActive = true
+        versionLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
 
     }
 }
@@ -52,7 +68,7 @@ class AccountViewController: UIViewController {
 extension AccountViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 5
 
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -73,11 +89,23 @@ extension AccountViewController: UITableViewDelegate, UITableViewDataSource, UIS
             break
         case 3:
             cell.field = "登出"
+        case 4:
+            cell.field = "版本"
+            cell.answerField.text = version()
+            cell.arrowRight.isHidden = true
+            cell.answerField.isHidden = false
             break
         default:
             break
         }
         return cell
+    }
+    
+    func version() -> String {
+        let dictionary = Bundle.main.infoDictionary!
+        let version = dictionary["CFBundleShortVersionString"] as! String
+        let build = dictionary["CFBundleVersion"] as! String
+        return "\(version) build \(build)"
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
