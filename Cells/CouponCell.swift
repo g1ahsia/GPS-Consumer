@@ -11,11 +11,14 @@ class CouponCell: UITableViewCell {
     var templateId : Int?
     var isUsed : Bool?
     var mainImage : UIImage?
+    var gradient = CAGradientLayer()
 
-    var mainImageView : UIImageView = {
-       var imageView = UIImageView()
+
+    var mainImageView : ImageLoader = {
+       var imageView = ImageLoader()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 16;
+        imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true;
         return imageView
     }()
@@ -88,13 +91,6 @@ class CouponCell: UITableViewCell {
     
     override func layoutSubviews() {
         super .layoutSubviews()
-//        if let image = mainImage {
-//            mainImageView.image = image
-//        }
-//        if let imageUrl = imageUrl {
-//            mainImageView.downloaded(from: imageUrl) {
-//            }
-//        }
         if let id = id {
         }
 
@@ -108,39 +104,49 @@ class CouponCell: UITableViewCell {
             remarkLabel.text = remark
         }
         if let templateId = templateId {
-            
-            NetworkManager.fetchCouponTemplate(id: templateId) { (couponTemplate) in
-                
-                DispatchQueue.main.async {
-                    let gradient = CAGradientLayer()
-                    gradient.frame = self.mainImageBackground.bounds
-                    gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
-                    gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
-                    gradient.cornerRadius = 16;
-                    gradient.colors = [UIColor(hexString: couponTemplate.gradientColorLeft).cgColor, UIColor(hexString: couponTemplate.gradientColorRight).cgColor]
-                    self.mainImageBackground.layer.insertSublayer(gradient, at: 0)
+//            self.mainImageBackground.layer.sublayers = nil
 
-                }
-            }
-//            switch templateId {
-//            case 1:
-//                gradient.colors = [UIColor(hexString: "#4CD964").cgColor, UIColor(hexString: "#83EE9D").cgColor]
-//                break
-//            case 2:
-//                gradient.colors = [UIColor(hexString: "#408BFC").cgColor, UIColor(hexString: "#74BFFE").cgColor]
-//                break
-//            case 3:
-//                gradient.colors = [UIColor(hexString: "#A66EFA").cgColor, UIColor(hexString: "#D2A7FD").cgColor]
-//                break
-//            case 4:
-//                gradient.colors = [UIColor(hexString: "#D12765").cgColor, UIColor(hexString: "#EA4F9E").cgColor]
-//                break
-//            case 5:
-//                gradient.colors = [UIColor(hexString: "#FC7B1E").cgColor, UIColor(hexString: "#FEB240").cgColor]
-//                break
-//            default:
-//                break
+
+//            NetworkManager.fetchCouponTemplate(id: templateId) { (couponTemplate) in
+//                DispatchQueue.main.async {
+//                    self.gradient.removeFromSuperlayer()
+//                    self.gradient = CAGradientLayer()
+//                    self.gradient.frame = self.mainImageBackground.bounds
+//                    self.gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+//                    self.gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+//                    self.gradient.cornerRadius = 16;
+//                    self.gradient.colors = [UIColor(hexString: couponTemplate.gradientColorLeft).cgColor, UIColor(hexString: couponTemplate.gradientColorRight).cgColor]
+//                    self.mainImageBackground.layer.insertSublayer(self.gradient, at: 0)
+//                }
 //            }
+            gradient.removeFromSuperlayer()
+            gradient = CAGradientLayer()
+            gradient.frame = self.mainImageBackground.bounds
+            gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+            gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+            gradient.cornerRadius = 16;
+
+            switch templateId {
+            case 1:
+                gradient.colors = [UIColor(hexString: "#4CD964").cgColor, UIColor(hexString: "#83EE9D").cgColor]
+                break
+            case 2:
+                gradient.colors = [UIColor(hexString: "#408BFC").cgColor, UIColor(hexString: "#74BFFE").cgColor]
+                break
+            case 3:
+                gradient.colors = [UIColor(hexString: "#A66EFA").cgColor, UIColor(hexString: "#D2A7FD").cgColor]
+                break
+            case 4:
+                gradient.colors = [UIColor(hexString: "#D12765").cgColor, UIColor(hexString: "#EA4F9E").cgColor]
+                break
+            case 5:
+                gradient.colors = [UIColor(hexString: "#FC7B1E").cgColor, UIColor(hexString: "#FEB240").cgColor]
+                break
+            default:
+                break
+            }
+            mainImageBackground.layer.insertSublayer(gradient, at: 0)
+
         }
         if let isUsed = isUsed {
             if (isUsed) {
@@ -152,6 +158,12 @@ class CouponCell: UITableViewCell {
                 validityBackground.widthAnchor.constraint(equalToConstant: 78).isActive = true
                 validityBackground.backgroundColor = ATLANTIS_GREEN
                 validityLabel.text = "尚未兌換"
+            }
+        }
+        if let imageUrl = imageUrl {
+//            if let strUrl = imageUrl.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed),
+               if let imgUrl = URL(string: imageUrl) {
+                mainImageView.loadImageWithUrl(imgUrl) // call this line for getting image to yourImageView
             }
         }
 
@@ -194,27 +206,28 @@ class CouponCell: UITableViewCell {
         super .prepareForReuse()
         imageUrl = nil
         mainImageView.image = nil
+        gradient.removeFromSuperlayer()
     }
 
-    func setImage() {
-        if imageUrl != nil {
-            DispatchQueue.main.async {
-                let jsonUrlString = self.imageUrl!
-                guard let url = URL(string: jsonUrlString) else { return }
-                URLSession.shared.dataTask(with: url) { (data, response, err) in
-                    guard let data = data else { return }
-
-                    if err == nil {
-                        let image = UIImage(data: data)
-
-                        DispatchQueue.main.async {
-                            self.mainImage = image
-                            self.mainImageView.image = self.mainImage
-                        }
-                    }
-                }.resume()
-            }
-        }
-    }
+//    func setImage() {
+//        if imageUrl != nil {
+//            DispatchQueue.main.async {
+//                let jsonUrlString = self.imageUrl!
+//                guard let url = URL(string: jsonUrlString) else { return }
+//                URLSession.shared.dataTask(with: url) { (data, response, err) in
+//                    guard let data = data else { return }
+//
+//                    if err == nil {
+//                        let image = UIImage(data: data)
+//
+//                        DispatchQueue.main.async {
+//                            self.mainImage = image
+//                            self.mainImageView.image = self.mainImage
+//                        }
+//                    }
+//                }.resume()
+//            }
+//        }
+//    }
 
 }

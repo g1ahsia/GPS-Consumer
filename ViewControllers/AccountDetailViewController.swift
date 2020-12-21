@@ -214,7 +214,7 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 break
             case 2:
                 cell.field = "身份證字號："
-                cell.placeholder = "請填寫電子郵件"
+                cell.placeholder = "請填寫身份證字號"
                 cell.fieldType = FieldType.Email
                 cell.answer = consumer.serialNumber
                 break

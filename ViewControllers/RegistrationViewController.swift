@@ -367,6 +367,11 @@ class RegistrationViewController: UIViewController {
             passcodeField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: passcodeField.frame.height))
             passcodeField.leftViewMode = .always
         }
+        else if (UIScreen.main.bounds.width == 320) {
+            passcodeField.defaultTextAttributes.updateValue(25, forKey: NSAttributedString.Key.kern)
+            passcodeField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 9, height: passcodeField.frame.height))
+            passcodeField.leftViewMode = .always
+        }
         passcodeField.delegate = self
 
         mainScrollView.addSubview(contentView)
@@ -447,7 +452,7 @@ class RegistrationViewController: UIViewController {
         infoTableView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: UIScreen.main.bounds.width * 1).isActive = true
         infoTableView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         infoTableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        infoTableView.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        infoTableView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
         storeSearchBar.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: UIScreen.main.bounds.width * 2).isActive = true
         storeSearchBar.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
@@ -485,7 +490,7 @@ class RegistrationViewController: UIViewController {
         next2.heightAnchor.constraint(equalToConstant: 44).isActive = true
 
         hintLabel1.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20 + UIScreen.main.bounds.width * 3).isActive = true
-        hintLabel1.topAnchor.constraint(equalTo: stepLabel.bottomAnchor, constant: 67).isActive = true
+        hintLabel1.bottomAnchor.constraint(equalTo: passcodeField.topAnchor, constant: -30).isActive = true
         hintLabel1.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -20 - UIScreen.main.bounds.width).isActive = true
         hintLabel1.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
@@ -520,7 +525,8 @@ class RegistrationViewController: UIViewController {
         passcodeBackground6.heightAnchor.constraint(equalToConstant: 96).isActive = true
 
         passcodeField.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 20 + UIScreen.main.bounds.width * 3).isActive = true
-        passcodeField.topAnchor.constraint(equalTo: hintLabel1.bottomAnchor, constant: 30).isActive = true
+//        passcodeField.topAnchor.constraint(equalTo: hintLabel1.bottomAnchor, constant: 30).isActive = true
+        passcodeField.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -20).isActive = true
         passcodeField.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
         passcodeField.heightAnchor.constraint(equalToConstant: 96).isActive = true
 
@@ -651,16 +657,16 @@ class RegistrationViewController: UIViewController {
                                               "storeId" : account.storeId,
                                               "homePhone" : account.homePhone]
             
-            NetworkManager.signUp(parameters: parameters) { (status) in
+            NetworkManager.signUp(parameters: parameters) { (result) in
                 DispatchQueue.main.async {
-                    if (status == 1) {
+                    if (result["status"] as! Int == 1) {
                         self.goToNextPage()
                     }
-                    else if (status == -1) {
+                    else if (result["status"] as! Int == -1) {
                         GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
                     }
                     else {
-                        GlobalVariables.showAlert(title: self.title, message: ERR_CREATING_ACCOUNT, vc: self)
+                        GlobalVariables.showAlert(title: self.title, message: result["message"] as! String, vc: self)
                     }
                 }
             }
@@ -719,9 +725,20 @@ class RegistrationViewController: UIViewController {
     }
     
     @objc private func resendButtonTapped(sender: UIButton!) {
+        let parameters: [String: Any] = [
+            "mobilePhone": account.mobilePhone
+        ]
+        NetworkManager.resendPasscode(parameters: parameters) { (status) in
+            DispatchQueue.main.async {
+                if (status == 1) {
+                    GlobalVariables.showAlert(title: self.title, message: MSG_RESENT_PASSCODE, vc: self)
+                }
+            }
+        }
     }
     
     @objc private func cancelButtonTapped(sender: UIButton!) {
+        self.navigationController!.popViewController(animated: true)
     }
 
     @objc private func doneButtonTapped(sender: UIButton!) {
@@ -765,6 +782,10 @@ class RegistrationViewController: UIViewController {
         
         print(closest as Any)
         return closest!
+    }
+    
+    @objc func goToPasscodePage() {
+        mainScrollView.contentOffset.x = UIScreen.main.bounds.width * 3
     }
 
 }

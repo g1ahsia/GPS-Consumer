@@ -69,9 +69,9 @@ extension SearchResultViewController: UICollectionViewDelegate, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "merchandise", for: indexPath) as! MerchandiseCell
         cell.name = merchandises[indexPath.row].name
-        cell.price = "\(merchandises[indexPath.row].price)"
+        cell.price = "NT$\(merchandises[indexPath.row].price)"
         cell.imageUrls = merchandises[indexPath.row].imageUrls
-        cell.setImage()
+//        cell.setImage()
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -80,7 +80,7 @@ extension SearchResultViewController: UICollectionViewDelegate, UICollectionView
         merchandiseDetailVC.remark = merchandises[indexPath.row].remark
 //        merchandiseDetailVC.mainImage = nil
         merchandiseDetailVC.imageUrls = merchandises[indexPath.row].imageUrls
-        merchandiseDetailVC.price = "\(merchandises[indexPath.row].price)"
+        merchandiseDetailVC.price = "NT$\(merchandises[indexPath.row].price)"
         merchandiseDetailVC.desc = merchandises[indexPath.row].description
         
         self.navigationController?.pushViewController(merchandiseDetailVC, animated: true)

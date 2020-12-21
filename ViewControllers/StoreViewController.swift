@@ -130,7 +130,11 @@ class StoreViewController: UIViewController, WKNavigationDelegate, WKUIDelegate 
                 self.mainImageView.image = #imageLiteral(resourceName: "logo_gps_horizontal")
                 if ((store.imageUrl) != nil) {
                     self.mainImageView.downloaded(from: store.imageUrl!) {
+                        self.setupLayout()
                     }
+                }
+                else {
+                    self.setupLayout()
                 }
                 if ((store.address) != nil) {
                     self.address = "藥局地址：" +  store.address!
@@ -138,7 +142,6 @@ class StoreViewController: UIViewController, WKNavigationDelegate, WKUIDelegate 
                 if ((self.phoneNumber) != nil) {
                     self.phoneNumber = "藥局電話" + store.phoneNumber!
                 }
-                self.setupLayout()
             }
         }
 

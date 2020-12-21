@@ -304,6 +304,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     @objc private func sendButtonTapped(sender: UIButton!) {
         spinner.startAnimating()
         view.isUserInteractionEnabled = false
+        sender.alpha = 0.5
+        sender.isEnabled = false
         
         ATTACHMENTS = []
         for imageView in attachedImageViews {
@@ -345,6 +347,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                         else {
                             GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
+                        self.send.alpha = 1.0
+                        self.send.isEnabled = true
                         self.spinner.stopAnimating()
                         self.view.isUserInteractionEnabled = true
                     }
@@ -365,6 +369,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                         else {
                             GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
+                        self.send.alpha = 1.0
+                        self.send.isEnabled = true
                         self.spinner.stopAnimating()
                         self.view.isUserInteractionEnabled = true
                     }
@@ -388,6 +394,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                         else {
                             GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
+                        self.send.alpha = 1.0
+                        self.send.isEnabled = true
                         self.spinner.stopAnimating()
                         self.view.isUserInteractionEnabled = true
 
@@ -410,6 +418,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                             else {
                                 GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                             }
+                            self.send.alpha = 1.0
+                            self.send.isEnabled = true
                             self.spinner.stopAnimating()
                             self.view.isUserInteractionEnabled = true
                         }
@@ -424,6 +434,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                                 self.send.isEnabled = true
                                 self.dismiss(animated: true) {
                                 }
+                                self.send.alpha = 1.0
+                                self.send.isEnabled = true
                                 self.spinner.stopAnimating()
                                 self.view.isUserInteractionEnabled = true
                             }
@@ -605,8 +617,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         lineCollectionViewBottomConstraint2 = lineImageCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         lineCollectionViewBottomConstraint1?.isActive = true
         
-        spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        spinner.centerXAnchor.constraint(equalTo: send.centerXAnchor).isActive = true
+        spinner.centerYAnchor.constraint(equalTo: send.centerYAnchor).isActive = true
         
     }
     
@@ -703,9 +715,9 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         contentScrollView .addSubview(imageView)
         imageView.addSubview(delete)
         
-//        imageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
-//        imageView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
-        imageView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        imageView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16).isActive = true
+        imageView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16).isActive = true
+//        imageView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         imageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
         var topConstraint: NSLayoutConstraint?

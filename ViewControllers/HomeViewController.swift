@@ -531,7 +531,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
             cell.imageUrl = coupons[indexPath.row].imageUrl
             cell.isUsed = false
             cell.layoutSubviews()
-            cell.setImage()
+//            cell.setImage()
             
 //            if (indexPath.row == 1) {
 //                cell.mainImage = #imageLiteral(resourceName: "Banner-2")
@@ -546,7 +546,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
             cell.desc = missions[indexPath.row].desc
             cell.mainImage = #imageLiteral(resourceName: "img_holder")
             cell.layoutSubviews()
-            cell.setImage()
+//            cell.setImage()
             return cell
 
         }
@@ -598,7 +598,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
             let rewardCardVC = RewardCardDetailViewController()
             rewardCardVC.id = rewardCards[indexPath.row].id
             rewardCardVC.name = rewardCards[indexPath.row].name
-            rewardCardVC.store = "松仁藥局"
+            rewardCardVC.store = rewardCards[indexPath.row].store
             rewardCardVC.templateId = rewardCards[indexPath.row].templateId
             rewardCardVC.threshold = rewardCards[indexPath.row].threshold
             rewardCardVC.currentPoint = rewardCards[indexPath.row].currentPoint
@@ -646,7 +646,7 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         cell.name = merchandises[indexPath.row].name
         cell.price = "NT$\(Int(merchandises[indexPath.row].price))"
         cell.imageUrls = merchandises[indexPath.row].imageUrls
-        cell.setImage()
+//        cell.setImage()
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

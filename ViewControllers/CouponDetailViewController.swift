@@ -35,6 +35,7 @@ class CouponDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(CouponCell.self, forCellReuseIdentifier: "coupon")
         tableView.backgroundColor = .clear
+        tableView.isUserInteractionEnabled = false
         return tableView
     }()
 
@@ -263,7 +264,7 @@ extension CouponDetailViewController: UITableViewDelegate, UITableViewDataSource
         cell.templateId = templateId
         cell.isUsed = false
         cell.layoutSubviews()
-        cell.setImage()
+//        cell.setImage()
         return cell
     }
 

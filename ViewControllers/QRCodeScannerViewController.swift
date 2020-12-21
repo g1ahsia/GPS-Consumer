@@ -124,6 +124,7 @@ class QRCodeScannerViewController: UIViewController, AVCaptureMetadataOutputObje
                             if  (result["status"] as! Int == 1) {
                                 rewardCardDetailVC!.currentPoint = (result["remainder"] as! Int)
                                 rewardCardDetailVC!.rewardCardTableView.reloadData()
+                                rewardCardDetailVC!.setupLayout()
                                 self.dismiss(animated: true) {
                                     GlobalVariables.showAlert(title: MSG_TITLE_DEPOSIT_POINTS, message: MSG_GAIN_POINT, vc: self.rewardCardDetailVC!)
                                 }

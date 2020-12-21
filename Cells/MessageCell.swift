@@ -21,7 +21,7 @@ class MessageCell: UITableViewCell {
     
     var senderLabel : UILabel = {
         var textLabel = UILabel()
-        textLabel.translatesAutoresizingMaskIntoConstraints = false
+//        textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.backgroundColor = .clear
         textLabel.font = UIFont(name: "NotoSansTC-Bold", size: 15)
         textLabel.textColor = MYTLE
@@ -30,7 +30,7 @@ class MessageCell: UITableViewCell {
     
     var messageView : UITextView = {
         var textView = UITextView()
-        textView.translatesAutoresizingMaskIntoConstraints = false
+//        textView.translatesAutoresizingMaskIntoConstraints = false
         textView.sizeToFit()
         textView.isScrollEnabled = false
         textView.isEditable = false
@@ -44,7 +44,7 @@ class MessageCell: UITableViewCell {
     
     var dateLabel : UILabel = {
         var textLabel = UILabel()
-        textLabel.translatesAutoresizingMaskIntoConstraints = false
+//        textLabel.translatesAutoresizingMaskIntoConstraints = false
         textLabel.backgroundColor = .clear
         textLabel.font = UIFont(name: "NotoSansTC-Regular", size: 15)
         textLabel.textAlignment = .right
@@ -54,11 +54,9 @@ class MessageCell: UITableViewCell {
         
     var attachmentImageViews = [UIImageView]()
 
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier : reuseIdentifier)
         self.backgroundColor = .clear
-
         self.contentView.addSubview(senderLabel)
         self.contentView.addSubview(messageView)
         self.contentView.addSubview(dateLabel)
@@ -72,7 +70,6 @@ class MessageCell: UITableViewCell {
         }
         attachmentImageViews.removeAll()        
     }
-
     
     override func layoutSubviews() {
         super .layoutSubviews()
@@ -85,12 +82,11 @@ class MessageCell: UITableViewCell {
         if let date = date {
             dateLabel.text = date
         }
-
-        let size = messageView.sizeThatFits(CGSize(width: self.contentView.frame.size.width - 32, height: CGFloat.greatestFiniteMagnitude))
         senderLabel.frame = CGRect(x: 16, y: 16, width: 200, height: 20)
+        let size = messageView.sizeThatFits(CGSize(width: self.contentView.frame.size.width - 32, height: CGFloat.greatestFiniteMagnitude))
         messageView.frame = CGRect(x: 16, y: 40, width: self.contentView.frame.size.width - 32, height: size.height)
         dateLabel.frame = CGRect(x: self.contentView.frame.size.width - 20 - 200, y: 16, width: 200, height: 20)
-        
+
         if attachedImages.count > 0 {
             for imageView in attachmentImageViews {
                 imageView.image = nil
@@ -101,9 +97,9 @@ class MessageCell: UITableViewCell {
                 let imageView = UIImageView(image: attachedImage)
                 imageView.contentMode = .scaleAspectFit
                 imageView.isUserInteractionEnabled = true
-                imageView.translatesAutoresizingMaskIntoConstraints = false
+//                imageView.translatesAutoresizingMaskIntoConstraints = false
                 attachmentImageViews.append(imageView)
-                
+
                 let tapImageView = MyTapGestureRecognizer(target: self, action: #selector(handleTap))
                 tapImageView.imageView = imageView
                 imageView.addGestureRecognizer(tapImageView)

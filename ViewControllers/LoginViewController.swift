@@ -152,7 +152,6 @@ class LoginViewController: UIViewController {
         NetworkManager.login(account: cell0.answerField.text!, password: cell1.answerField.text!) { (result) in
             print(result)
             DispatchQueue.main.async {
-
                 if (result["status"] as! Int == 1) {
                     self.dismiss(animated: true) {
                     }
@@ -171,8 +170,17 @@ class LoginViewController: UIViewController {
                 else if (result["status"] as! Int == -1) {
                     GlobalVariables.showAlert(title: MSG_TITLE_LOGIN, message: ERR_CONNECTING, vc: self)
                 }
-                else {
-                    GlobalVariables.showAlert(title: MSG_TITLE_LOGIN, message: result["message"] as? String, vc: self)
+                else if (result["status"] as! Int == 2) {
+                    GlobalVariables.showAlert(title: MSG_TITLE_LOGIN, message: result["message"] as! String, vc: self)
+                }
+                else if (result["status"] as! Int == 3) {
+//                    GlobalVariables.showAlert(title: MSG_TITLE_LOGIN, message: result["message"] as? String, vc: self)
+                    let registrationVC = RegistrationViewController()
+                    registrationVC.account.mobilePhone = cell0.answerField.text!
+                    registrationVC.goToPasscodePage()
+                    self.navigationController?.pushViewController(registrationVC, animated: true)
+                    self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+
                 }
             }
         }

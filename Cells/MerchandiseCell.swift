@@ -15,8 +15,8 @@ class MerchandiseCell: UICollectionViewCell {
     var price : String?
     var imageUrls : [String]?
         
-    var mainImageView : UIImageView = {
-        var imageView = UIImageView()
+    var mainImageView : ImageLoader = {
+        var imageView = ImageLoader()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = UIColor(red: 232/255, green: 236/255, blue: 238/255, alpha: 1)
         imageView.contentMode = .scaleAspectFit
@@ -79,6 +79,14 @@ class MerchandiseCell: UICollectionViewCell {
         if let price = price {
             priceLabel.text = price
         }
+        if let imageUrls = imageUrls {
+            if (imageUrls.count > 0) {
+//                if let strUrl = imageUrls[0].addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed),
+                   if let imgUrl = URL(string: imageUrls[0]) {
+                    mainImageView.loadImageWithUrl(imgUrl) // call this line for getting image to yourImageView
+                }
+            }
+        }
         mainImageBackground.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         mainImageBackground.widthAnchor.constraint(equalToConstant: (UIScreen.main.bounds.width - 49) / 2).isActive = true
         mainImageBackground.heightAnchor.constraint(equalTo: mainImageView.widthAnchor, multiplier: 180/163).isActive = true
@@ -110,26 +118,27 @@ class MerchandiseCell: UICollectionViewCell {
         super .prepareForReuse()
         imageUrls = nil
         mainImageView.image = nil
+        mainImage = nil
     }
     
-    func setImage() {
-        if imageUrls!.count > 0 {
-            DispatchQueue.main.async {
-                let jsonUrlString = self.imageUrls![0]
-                guard let url = URL(string: jsonUrlString) else { return }
-                URLSession.shared.dataTask(with: url) { (data, response, err) in
-                    guard let data = data else { return }
-
-                    if err == nil {
-                        let image = UIImage(data: data)
-
-                        DispatchQueue.main.async {
-                            self.mainImageView.image = image
-                        }
-                    }
-                }.resume()
-            }
-        }
-    }
+//    func setImage() {
+//        if imageUrls!.count > 0 {
+//            DispatchQueue.main.async {
+//                let jsonUrlString = self.imageUrls![0]
+//                guard let url = URL(string: jsonUrlString) else { return }
+//                URLSession.shared.dataTask(with: url) { (data, response, err) in
+//                    guard let data = data else { return }
+//
+//                    if err == nil {
+//                        let image = UIImage(data: data)
+//
+//                        DispatchQueue.main.async {
+//                            self.mainImageView.image = image
+//                        }
+//                    }
+//                }.resume()
+//            }
+//        }
+//    }
 }
 

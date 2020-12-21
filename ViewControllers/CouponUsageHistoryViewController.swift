@@ -67,6 +67,7 @@ extension CouponUsageHistoryViewController: UITableViewDelegate, UITableViewData
         cell.store = coupons[indexPath.row].store
         cell.remark = coupons[indexPath.row].remark
         cell.templateId = coupons[indexPath.row].templateId
+        cell.imageUrl = coupons[indexPath.row].imageUrl
         cell.isUsed = true
         cell.layoutSubviews()
         return cell

@@ -39,6 +39,7 @@ class RewardCardDetailViewController: UIViewController {
         tableView.dataSource = self
         tableView.register(RewardCardCell.self, forCellReuseIdentifier: "rewardCard")
         tableView.backgroundColor = .clear
+        tableView.isUserInteractionEnabled = false
         return tableView
     }()
     
@@ -141,7 +142,7 @@ class RewardCardDetailViewController: UIViewController {
 
     }
     
-    private func setupLayout() {
+    func setupLayout() {
         
         if (threshold > currentPoint) {
             use.alpha = 0.5
@@ -324,7 +325,7 @@ extension RewardCardDetailViewController: UITableViewDelegate, UITableViewDataSo
             let cell = tableView.dequeueReusableCell(withIdentifier: "rewardCard", for: indexPath) as! RewardCardCell
             cell.selectionStyle = .none
             cell.name = name
-            cell.store = "松仁藥局"
+            cell.store = store
             cell.templateId = templateId
             cell.threshold = threshold
             cell.currentPoint = currentPoint
@@ -349,13 +350,15 @@ extension RewardCardDetailViewController: UITableViewDelegate, UITableViewDataSo
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let merchandiseDetailVC = MerchandiseDetailViewController()
-        merchandiseDetailVC.name = merchandises[indexPath.row].name
-        merchandiseDetailVC.remark = merchandises[indexPath.row].remark
-        merchandiseDetailVC.imageUrls = merchandises[indexPath.row].imageUrls
-        merchandiseDetailVC.price = "\(merchandises[indexPath.row].price)"
-        merchandiseDetailVC.desc = merchandises[indexPath.row].description
-        self.navigationController?.pushViewController(merchandiseDetailVC, animated: true)
+        if (tableView == merchandiseTableView) {
+            let merchandiseDetailVC = MerchandiseDetailViewController()
+            merchandiseDetailVC.name = merchandises[indexPath.row].name
+            merchandiseDetailVC.remark = merchandises[indexPath.row].remark
+            merchandiseDetailVC.imageUrls = merchandises[indexPath.row].imageUrls
+            merchandiseDetailVC.price = "\(merchandises[indexPath.row].price)"
+            merchandiseDetailVC.desc = merchandises[indexPath.row].description
+            self.navigationController?.pushViewController(merchandiseDetailVC, animated: true)
+        }
     }
 
 }

@@ -8,12 +8,13 @@ class MissionCell: UITableViewCell {
     var desc : String?
     var imageUrl : String?
         
-    var mainImageView : UIImageView = {
-        var imageView = UIImageView()
+    var mainImageView : ImageLoader = {
+        var imageView = ImageLoader()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
+        imageView.image = #imageLiteral(resourceName: "img_holder")
         return imageView
     }()
     
@@ -71,6 +72,12 @@ class MissionCell: UITableViewCell {
         if let desc = desc {
             descView.text = desc
         }
+        if let imageUrl = imageUrl {
+//            if let strUrl = imageUrl.addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed),
+              if let imgUrl = URL(string: imageUrl) {
+                mainImageView.loadImageWithUrl(imgUrl) // call this line for getting image to yourImageView
+            }
+        }
         
         mainImageView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         mainImageView.widthAnchor.constraint(equalToConstant: 80).isActive = true
@@ -96,25 +103,25 @@ class MissionCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setImage() {
-        if (imageUrl != nil) {
-            DispatchQueue.main.async {
-                let jsonUrlString = self.imageUrl
-                guard let url = URL(string: jsonUrlString!) else { return }
-                URLSession.shared.dataTask(with: url) { (data, response, err) in
-                    guard let data = data else { return }
-
-                    if err == nil {
-                        let image = UIImage(data: data)
-
-                        DispatchQueue.main.async {
-                            self.mainImage = image
-                            self.mainImageView.image = self.mainImage
-                        }
-                    }
-                }.resume()
-            }
-        }
-    }
+//    func setImage() {
+//        if (imageUrl != nil) {
+//            DispatchQueue.main.async {
+//                let jsonUrlString = self.imageUrl
+//                guard let url = URL(string: jsonUrlString!) else { return }
+//                URLSession.shared.dataTask(with: url) { (data, response, err) in
+//                    guard let data = data else { return }
+//
+//                    if err == nil {
+//                        let image = UIImage(data: data)
+//
+//                        DispatchQueue.main.async {
+//                            self.mainImage = image
+//                            self.mainImageView.image = self.mainImage
+//                        }
+//                    }
+//                }.resume()
+//            }
+//        }
+//    }
 
 }
