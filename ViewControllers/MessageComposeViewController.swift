@@ -304,14 +304,13 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     @objc private func sendButtonTapped(sender: UIButton!) {
         spinner.startAnimating()
         view.isUserInteractionEnabled = false
-        sender.alpha = 0.5
         sender.isEnabled = false
+        sender.alpha = 0.5
         
         ATTACHMENTS = []
         for imageView in attachedImageViews {
             attachedImages.append(imageView.image!)
         }
-        sender.isEnabled = false
         let myGroup = DispatchGroup()
         
         if (attachedImages.count > 0) {
@@ -347,8 +346,8 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                         else {
                             GlobalVariables.showAlert(title: self.title, message: result["message"] as? String, vc: self)
                         }
-                        self.send.alpha = 1.0
                         self.send.isEnabled = true
+                        self.send.alpha = 1.0
                         self.spinner.stopAnimating()
                         self.view.isUserInteractionEnabled = true
                     }

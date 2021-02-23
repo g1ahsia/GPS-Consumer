@@ -37,6 +37,7 @@ class MessageDetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 //        (UIApplication.shared.delegate as! AppDelegate).restrictRotation = .portrait
+
     }
     
     override func viewDidLoad() {
@@ -45,6 +46,7 @@ class MessageDetailViewController: UIViewController {
         view.addSubview(messageDetailTableView)
         setupLayout()
         NotificationCenter.default.addObserver(self, selector: #selector(self.reloadData), name:Notification.Name("AddedMessage"), object: nil)
+
     }
     
     @objc private func addButtonTapped() { }

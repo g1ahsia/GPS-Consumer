@@ -681,17 +681,17 @@ class RegistrationViewController: UIViewController {
                     if (status == 1) {
                         self.goToNextPage()
                         
-                        let uuid = UUID().uuidString
-                        let parameters: [String: Any] = [
-                            "deviceId" : uuid,
-                            "platform" : "ios"
-                        ]
-                        
-                        NetworkManager.setDevice(parameters: parameters) { (result) in
-                            if (result["status"] as! Int == 1) {
-                                print("device token added")
-                            }
-                        }
+//                        let uuid = UUID().uuidString
+//                        let parameters: [String: Any] = [
+//                            "deviceId" : uuid,
+//                            "platform" : "ios"
+//                        ]
+//                        
+//                        NetworkManager.setDevice(parameters: parameters) { (result) in
+//                            if (result["status"] as! Int == 1) {
+//                                print("device token added")
+//                            }
+//                        }
                     }
                     else if (status == -1) {
                         GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)

@@ -27,15 +27,15 @@ class AccountDetailViewController: UIViewController {
         return tableView
     }()
 
-    var datePicker : UIDatePicker = {
-        var picker = UIDatePicker()
-        picker.translatesAutoresizingMaskIntoConstraints = false
-        picker.backgroundColor = .white
-        picker.datePickerMode = .date
-        picker.alpha = 0
-        picker.setValue(MYTLE, forKeyPath: "textColor")
-        return picker
-    }()
+//    var datePicker : UIDatePicker = {
+//        var picker = UIDatePicker()
+//        picker.translatesAutoresizingMaskIntoConstraints = false
+//        picker.backgroundColor = .white
+//        picker.datePickerMode = .date
+//        picker.alpha = 0
+//        picker.setValue(MYTLE, forKeyPath: "textColor")
+//        return picker
+//    }()
     
     lazy var sexPickerView : UIPickerView = {
         var picker = UIPickerView()
@@ -83,13 +83,13 @@ class AccountDetailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = SNOW
         title = "修改個人資料"
-        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+//        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
         view.addSubview(infoTableView)
         view.addSubview(versionLabel)
         view.addSubview(save)
         infoTableView.tableFooterView = UIView(frame: .zero)
         view.addSubview(blackCover)
-        view.addSubview(datePicker)
+//        view.addSubview(datePicker)
         view.addSubview(sexPickerView)
                 
         let tapOnBlackCover = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
@@ -120,9 +120,9 @@ class AccountDetailViewController: UIViewController {
         blackCover.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         blackCover.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
-        datePicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        datePicker.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+//        datePicker.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+//        datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+//        datePicker.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
         sexPickerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         sexPickerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
@@ -142,6 +142,8 @@ class AccountDetailViewController: UIViewController {
         let cell5 = infoTableView.cellForRow(at: NSIndexPath(row: 5, section: 0) as IndexPath) as! FormCell
         let cell6 = infoTableView.cellForRow(at: NSIndexPath(row: 6, section: 0) as IndexPath) as! FormCell
 
+        consumer.dateOfBirth = cell1.answer
+        
         let parameters: [String: Any] = [
             "name": cell0.answerField.text!,
             "dateOfBirth": consumer.dateOfBirth!,
@@ -168,22 +170,22 @@ class AccountDetailViewController: UIViewController {
 
     }
 
-    @objc func dateChanged(_ sender: UIDatePicker) {
-        let components = Calendar.current.dateComponents([.year, .month, .day], from: sender.date)
-        if let day = components.day, let month = components.month, let year = components.year {
-            print("\(day) \(month) \(year)")
-            let cell1 = infoTableView.cellForRow(at: NSIndexPath(row: 1, section: 0) as IndexPath) as! FormCell
-            cell1.answer = "\(year)/\(month)/\(day)"
-            cell1.layoutSubviews()
-            consumer.dateOfBirth = "\(year)/\(month)/\(day)"
-        }
-    }
+//    @objc func dateChanged(_ sender: UIDatePicker) {
+//        let components = Calendar.current.dateComponents([.year, .month, .day], from: sender.date)
+//        if let day = components.day, let month = components.month, let year = components.year {
+//            print("\(day) \(month) \(year)")
+//            let cell1 = infoTableView.cellForRow(at: NSIndexPath(row: 1, section: 0) as IndexPath) as! FormCell
+//            cell1.answer = "\(year)/\(month)/\(day)"
+//            cell1.layoutSubviews()
+//            consumer.dateOfBirth = "\(year)/\(month)/\(day)"
+//        }
+//    }
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         UIView .animate(withDuration: 0.3) {
             self.blackCover.alpha = 0
             self.sexPickerView.alpha = 0
-            self.datePicker.alpha = 0
+//            self.datePicker.alpha = 0
         }
     }
 }
@@ -209,7 +211,7 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
             case 1:
                 cell.field = "出生日期："
                 cell.placeholder = "請輸入出生日期"
-                cell.fieldType = FieldType.Selection
+                cell.fieldType = FieldType.Date
                 cell.answer = consumer.dateOfBirth
                 break
             case 2:
@@ -270,12 +272,12 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
             case 0:
                 break
             case 1:
-                UIView .animate(withDuration: 0.3) {
-                    self.blackCover.alpha = 0.5
-                    self.datePicker.alpha = 1
-                    self.sexPickerView.alpha = 0
-                }
-                self.view.endEditing(true)
+//                UIView .animate(withDuration: 0.3) {
+//                    self.blackCover.alpha = 0.5
+////                    self.datePicker.alpha = 1
+//                    self.sexPickerView.alpha = 0
+//                }
+//                self.view.endEditing(true)
                 break
             case 2:
                 break
@@ -285,7 +287,7 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 UIView .animate(withDuration: 0.3) {
                     self.blackCover.alpha = 0.5
                     self.sexPickerView.alpha = 1
-                    self.datePicker.alpha = 0
+//                    self.datePicker.alpha = 0
                 }
                 self.view.endEditing(true)
                 break
@@ -296,7 +298,7 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 break
             default:
                 UIView .animate(withDuration: 0.3) {
-                    self.datePicker.alpha = 0
+//                    self.datePicker.alpha = 0
                     self.sexPickerView.alpha = 0
                 }
                 break
@@ -345,7 +347,7 @@ extension AccountDetailViewController: UIPickerViewDataSource, UIPickerViewDeleg
 extension AccountDetailViewController: UITextFieldDelegate {
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         print(textField.text as Any)
-        datePicker.alpha = 0
+//        datePicker.alpha = 0
         sexPickerView.alpha = 0
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

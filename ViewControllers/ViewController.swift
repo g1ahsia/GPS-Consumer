@@ -11,6 +11,10 @@ import UIKit
 class ViewController: UIViewController {
     
     var tabBarCtrl: UITabBarController!
+    
+    var messageNav = UINavigationController()
+    
+    var customTabBarItem3 = UITabBarItem()
         
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -21,6 +25,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self, selector: #selector(self.presentLoginVC(notification:)), name: Notification.Name("Logout"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.presentMessageDetailVC(notification:)), name: Notification.Name("presentMessageDetailVC"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.setMessageBadge), name: Notification.Name("setMessageBadge"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.clearMessageBadge), name: Notification.Name("clearMessageBadge"), object: nil)
+
 
         let userDefaults = UserDefaults.standard
 
@@ -73,11 +83,11 @@ class ViewController: UIViewController {
         messageVC.role = Role.Consumer
         messageVC.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
 
-        let messageNav = UINavigationController()
+        messageNav = UINavigationController()
         messageNav.navigationBar.tintColor = ATLANTIS_GREEN
         messageNav.setNavigationBarHidden(false, animated: false)
         messageNav.pushViewController(messageVC, animated: true)
-        let customTabBarItem3:UITabBarItem = UITabBarItem(title: "會員訊息", image: #imageLiteral(resourceName: " tab_ic_messages_grey"), selectedImage: #imageLiteral(resourceName: " tab_ic_messages_green"))
+        customTabBarItem3 = UITabBarItem(title: "會員訊息", image: #imageLiteral(resourceName: " tab_ic_messages_grey"), selectedImage: #imageLiteral(resourceName: " tab_ic_messages_green"))
         messageNav.tabBarItem = customTabBarItem3
 
         let storeVC = StoreViewController()
@@ -88,7 +98,6 @@ class ViewController: UIViewController {
         storeNav.setNavigationBarHidden(false, animated: false)
         storeNav.pushViewController(storeVC, animated: true)
 
-//        storeVC.view.backgroundColor = .blue
         let customTabBarItem4:UITabBarItem = UITabBarItem(title: "藥局介紹", image: #imageLiteral(resourceName: " tab_ic_info_grey"), selectedImage: #imageLiteral(resourceName: " tab_ic_info_green"))
         storeNav.tabBarItem = customTabBarItem4
         
@@ -106,6 +115,8 @@ class ViewController: UIViewController {
         tabBarCtrl.viewControllers = [homeNav, categoryNav, messageNav, storeNav, accountNav]
         
         self.view.addSubview(tabBarCtrl.view)
+        
+
 
     }
     @objc func presentLoginVC(notification: Notification) {
@@ -121,6 +132,35 @@ class ViewController: UIViewController {
             self.tabBarCtrl?.selectedIndex = 0
         }
     }
+    @objc func presentMessageDetailVC(notification: Notification) {
+        tabBarCtrl.selectedIndex = 2
+        let userInfo = notification.userInfo;
+        let messageDetailVC = MessageDetailViewController()
+        messageDetailVC.role = Role.Consumer
+        
+        let threadId = (userInfo?["threadId"] as! NSString).integerValue
+        let threadType = (userInfo?["threadType"] as! NSString).integerValue
+
+//        let threadId = userInfo!["threadId"] as! Int32
+//      // totalfup is a Double here
+        //        let type = threads[indexPath.row].type - 1
+        messageDetailVC.title = MESSAGE_SUBJECTS[threadType - 1]
+        messageDetailVC.threadId = threadId
+        messageDetailVC.reloadData()
+        messageNav.popToRootViewController(animated: true)
+        messageNav.pushViewController(messageDetailVC, animated: true)
+    }
+    
+    @objc func setMessageBadge() {
+        if (BADGES[0] > 0) {
+            let badge_message = String(BADGES[0])
+            customTabBarItem3.badgeValue = badge_message
+        }
+    }
+    @objc func clearMessageBadge() {
+        customTabBarItem3.badgeValue = nil
+    }
+
 }
 
 extension UIViewController {

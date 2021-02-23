@@ -13,6 +13,7 @@ class MessageViewController: UIViewController {
     
     var role : Role?
     var threads = [Thread]()
+    var numUnreads = 0
 
     lazy var threadTableView : UITableView = {
         var tableView = UITableView()
@@ -32,8 +33,24 @@ class MessageViewController: UIViewController {
             self.threadTableView.deselectRow(at: self.threadTableView.indexPathForSelectedRow!, animated: true)
         }
         self.reloadData()
+        let param = ["messages" : 0]
+        if (role == Role.Consumer) {
+            NetworkManager.updateBadges(parameters: param) { (result) in
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name("fetchBadges"), object: nil, userInfo: nil)
+                    NotificationCenter.default.post(name: Notification.Name("clearMessageBadge"), object: nil, userInfo: nil)
+                }
+            }
+        }
+        else {
+            NetworkManager.updateStoreBadges(parameters: param) { (result) in
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: Notification.Name("fetchBadges"), object: nil, userInfo: nil)
+                    NotificationCenter.default.post(name: Notification.Name("clearMessageBadge"), object: nil, userInfo: nil)
+                }
+            }
+        }
     }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = SNOW
@@ -42,29 +59,17 @@ class MessageViewController: UIViewController {
         
         var image = UIImage(#imageLiteral(resourceName: "ic_fill_add"))
         image = image.withRenderingMode(.alwaysOriginal)
-//        let add = UIBarButtonItem(image: image, style: .done, target: self, action: #selector(self.addButtonTapped)) //
         let add = UIBarButtonItem(title: "新增", style: .done, target: self, action: #selector(self.addButtonTapped))
 
         self.navigationItem.rightBarButtonItem  = add
 
-//        threads = [
-//            Thread.init(id: 1, type: 1, isRead: true, sender: "王大寶", message: "處方箋如附件", updatedDate: "2020/04/25 15:35"),
-//            Thread.init(id: 2, type: 0, isRead: true, sender: "張曉玲", message: "藥品有無副作用", updatedDate: "2020/04/23 15:35"),
-//            Thread.init(id: 3, type: 2, isRead: true, sender: "何大中", message: "最近體重的事情一直煩惱著我，想請教如何減重？我真的很需要建議，謝謝！", updatedDate: "2020/04/20 15:35")
-//        ]
-        
-//        NetworkManager.fetchThreads() { (threads) in
-//            self.threads = threads
-//            DispatchQueue.main.async {
-//                self.threadTableView.reloadData()
-//            }
-//        }
-
         threadTableView.tableFooterView = UIView(frame: .zero)
         setupLayout()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadData), name:Notification.Name("CreatedThread"), object: nil)
+//        NotificationCenter.default.post(name: Notification.Name("getBadges"), object: nil, userInfo: nil)
 
+        NotificationCenter.default.addObserver(self, selector: #selector(self.reloadData), name:Notification.Name("CreatedThread"), object: nil)
+        NotificationCenter.default.post(name: Notification.Name("getCookies"), object: nil, userInfo: nil)
     }
     
     @objc private func addButtonTapped() {
@@ -99,6 +104,7 @@ extension MessageViewController: UITableViewDelegate, UITableViewDataSource, UIS
         }
 
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "thread", for: indexPath) as! ThreadCell
         cell.sender = threads[indexPath.row].sender

@@ -155,15 +155,13 @@ class LoginViewController: UIViewController {
                 if (result["status"] as! Int == 1) {
                     self.dismiss(animated: true) {
                     }
-                    let uuid = UUID().uuidString
                     let parameters: [String: Any] = [
-                        "deviceId" : uuid,
+                        "token" : FCM_TOKEN,
                         "platform" : "ios"
                     ]
-
-                    NetworkManager.setDevice(parameters: parameters) { (result) in
+                    NetworkManager.registerToken(parameters: parameters) { (result) in
                         if (result["status"] as! Int == 1) {
-                            print("device token added")
+                            print("fcm token added")
                         }
                     }
                 }

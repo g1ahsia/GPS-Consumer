@@ -58,10 +58,12 @@ class FormCell: UITableViewCell {
     
     let datePicker : UIDatePicker = {
         var datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.datePickerMode = .date
         datePicker.locale = .current
+        datePicker.isHidden = true
         if #available(iOS 14, *) {
-            datePicker.preferredDatePickerStyle = .wheels
+//            datePicker.preferredDatePickerStyle = .wheels
             datePicker.sizeToFit()
             }
         return datePicker
@@ -74,6 +76,7 @@ class FormCell: UITableViewCell {
         self.contentView.addSubview(answerField)
         self.contentView.addSubview(arrowRight)
         self.contentView.addSubview(arrowDown)
+        self.contentView.addSubview(datePicker)
         self.backgroundColor = .clear
         answerField.delegate = self
         answerField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
@@ -116,10 +119,16 @@ class FormCell: UITableViewCell {
                 arrowRight.isHidden = false
                 break
             case FieldType.Date:
-                answerField.isUserInteractionEnabled = true
+                answerField.isUserInteractionEnabled = false
+                answerField.isHidden = true
                 arrowRight.isHidden = false
                 answerField.inputView = datePicker
+                datePicker.isHidden = false
                 datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+                print("date of birth", answer)
+                if (answer != "") {
+                    datePicker.setDate(from: answer!, format: "yyyy/MM/dd")
+                }
                 break
             }
         }
@@ -139,6 +148,9 @@ class FormCell: UITableViewCell {
         arrowDown.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         arrowDown.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -8).isActive = true
 
+        datePicker.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        datePicker.leftAnchor.constraint(equalTo: fieldLabel.rightAnchor).isActive = true
+
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -156,6 +168,7 @@ class FormCell: UITableViewCell {
             answerField.text = "\(year)/\(month)/\(day)"
             answerField.endEditing(true)
             answerField.sendActions(for: .editingChanged)
+            answer = "\(year)/\(month)/\(day)"
         }
     }
 }
@@ -165,4 +178,13 @@ extension FormCell: UITextFieldDelegate {
         textField.resignFirstResponder()  //if desired
         return true
     }
+}
+
+extension UIDatePicker {
+   func setDate(from string: String, format: String, animated: Bool = true) {
+      let formater = DateFormatter()
+      formater.dateFormat = format
+      let date = formater.date(from: string) ?? Date()
+      setDate(date, animated: animated)
+   }
 }

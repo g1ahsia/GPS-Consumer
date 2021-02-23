@@ -92,6 +92,15 @@ class HomeViewController: UIViewController {
         return collectionView
     }()
     
+    lazy var merchandiseNoTitleLabel : UILabel = {
+        var noTitleLabel = UILabel()
+        noTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        noTitleLabel.font = UIFont(name: "NotoSansTC-Regular", size: 17)
+        noTitleLabel.textColor = SHUTTLE_GREY
+        noTitleLabel.text = "目前沒有相關資料"
+        return noTitleLabel
+    }()
+    
     lazy var couponTableView : UITableView = {
         var tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -100,6 +109,15 @@ class HomeViewController: UIViewController {
         tableView.register(CouponCell.self, forCellReuseIdentifier: "coupon")
         tableView.backgroundColor = .clear
         return tableView
+    }()
+    
+    lazy var couponNoTitleLabel : UILabel = {
+        var noTitleLabel = UILabel()
+        noTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        noTitleLabel.font = UIFont(name: "NotoSansTC-Regular", size: 17)
+        noTitleLabel.textColor = SHUTTLE_GREY
+        noTitleLabel.text = "目前沒有相關資料"
+        return noTitleLabel
     }()
     
     lazy var missionTableView : UITableView = {
@@ -113,6 +131,15 @@ class HomeViewController: UIViewController {
         return tableView
     }()
     
+    lazy var missionNoTitleLabel : UILabel = {
+        var noTitleLabel = UILabel()
+        noTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        noTitleLabel.font = UIFont(name: "NotoSansTC-Regular", size: 17)
+        noTitleLabel.textColor = SHUTTLE_GREY
+        noTitleLabel.text = "目前沒有相關資料"
+        return noTitleLabel
+    }()
+    
     lazy var rewardCardTableView : UITableView = {
         var tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -121,6 +148,15 @@ class HomeViewController: UIViewController {
         tableView.register(RewardCardCell.self, forCellReuseIdentifier: "rewardCard")
         tableView.backgroundColor = .clear
         return tableView
+    }()
+    
+    lazy var rewardCardNoTitleLabel : UILabel = {
+        var noTitleLabel = UILabel()
+        noTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        noTitleLabel.font = UIFont(name: "NotoSansTC-Regular", size: 17)
+        noTitleLabel.textColor = SHUTTLE_GREY
+        noTitleLabel.text = "目前沒有相關資料"
+        return noTitleLabel
     }()
     
     var prescription : UIButton = {
@@ -195,8 +231,10 @@ class HomeViewController: UIViewController {
         let add = UIBarButtonItem(image: image, style: .done, target: self, action: #selector(self.prescriptionButtonTapped)) //
         self.navigationItem.rightBarButtonItem  = add
 
-//        missions = [Mission.init(id: 1, name: "臉書粉絲團按讚", desc: "凡到好藥坊粉絲團點讚，將獲得優惠券乙張", imageUrl: "")]
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.fetchBadges), name: Notification.Name("fetchBadges"), object: nil)
+
         separator1.backgroundColor = UIColor .black
         separator1.alpha = 0.2
         separator1.translatesAutoresizingMaskIntoConstraints = false
@@ -228,28 +266,28 @@ class HomeViewController: UIViewController {
 
         button1.translatesAutoresizingMaskIntoConstraints = false
         button1.setTitle("優惠券", for: .normal)
-        button1.setTitleColor(UIColor(red: 89/255, green: 98/255, blue: 105/255, alpha: 1), for: .normal)
+        button1.setTitleColor(SHUTTLE_GREY, for: .normal)
         button1.titleLabel?.font = UIFont(name: "PingFangTC-Semibold", size: 17)
         button1.backgroundColor = .clear
         button1.addTarget(self, action: #selector(menuButtonTapped), for: .touchUpInside)
 
         button2.translatesAutoresizingMaskIntoConstraints = false
         button2.setTitle("集點卡", for: .normal)
-        button2.setTitleColor(UIColor(red: 89/255, green: 98/255, blue: 105/255, alpha: 1), for: .normal)
+        button2.setTitleColor(SHUTTLE_GREY, for: .normal)
         button2.titleLabel?.font = UIFont(name: "PingFangTC-Semibold", size: 17)
         button2.backgroundColor = .clear
         button2.addTarget(self, action: #selector(menuButtonTapped), for: .touchUpInside)
 
         button3.translatesAutoresizingMaskIntoConstraints = false
         button3.setTitle("商品", for: .normal)
-        button3.setTitleColor(UIColor(red: 89/255, green: 98/255, blue: 105/255, alpha: 1), for: .normal)
+        button3.setTitleColor(SHUTTLE_GREY, for: .normal)
         button3.titleLabel?.font = UIFont(name: "PingFangTC-Semibold", size: 17)
         button3.backgroundColor = .clear
         button3.addTarget(self, action: #selector(menuButtonTapped), for: .touchUpInside)
 
         button4.translatesAutoresizingMaskIntoConstraints = false
         button4.setTitle("任務", for: .normal)
-        button4.setTitleColor(UIColor(red: 89/255, green: 98/255, blue: 105/255, alpha: 1), for: .normal)
+        button4.setTitleColor(SHUTTLE_GREY, for: .normal)
         button4.titleLabel?.font = UIFont(name: "PingFangTC-Semibold", size: 17)
         button4.backgroundColor = .clear
         button4.addTarget(self, action: #selector(menuButtonTapped), for: .touchUpInside)
@@ -277,6 +315,11 @@ class HomeViewController: UIViewController {
         mainScrollView.addSubview(rewardCardTableView)
         mainScrollView.addSubview(merchandiseCollectionView)
         mainScrollView.addSubview(missionTableView)
+        
+        couponTableView.addSubview(couponNoTitleLabel)
+        rewardCardTableView.addSubview(rewardCardNoTitleLabel)
+        merchandiseCollectionView.addSubview(merchandiseNoTitleLabel)
+        missionTableView.addSubview(missionNoTitleLabel)
 
         mainScrollView.delegate = self
         couponTableView.separatorColor = .clear
@@ -284,7 +327,8 @@ class HomeViewController: UIViewController {
         missionTableView.tableFooterView = UIView(frame: .zero)
 
         setupLayout()
-        
+        fetchBadges()
+
         
 //        NetworkManager.fetchCoupons() { (coupons) in
 //            self.coupons = coupons
@@ -365,21 +409,33 @@ class HomeViewController: UIViewController {
         couponTableView.leftAnchor.constraint(equalTo: mainScrollView.leftAnchor).isActive = true
         couponTableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         couponTableView.heightAnchor.constraint(equalTo: mainScrollView.heightAnchor).isActive = true
+        
+        couponNoTitleLabel.centerXAnchor.constraint(equalTo: couponTableView.centerXAnchor).isActive = true
+        couponNoTitleLabel.centerYAnchor.constraint(equalTo: couponTableView.centerYAnchor).isActive = true
 
         rewardCardTableView.topAnchor.constraint(equalTo: mainScrollView.topAnchor).isActive = true
         rewardCardTableView.leftAnchor.constraint(equalTo: mainScrollView.leftAnchor, constant: UIScreen.main.bounds.width * 1).isActive = true
         rewardCardTableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         rewardCardTableView.heightAnchor.constraint(equalTo: mainScrollView.heightAnchor).isActive = true
+        
+        rewardCardNoTitleLabel.centerXAnchor.constraint(equalTo: rewardCardTableView.centerXAnchor).isActive = true
+        rewardCardNoTitleLabel.centerYAnchor.constraint(equalTo: rewardCardTableView.centerYAnchor).isActive = true
 
         merchandiseCollectionView.topAnchor.constraint(equalTo: mainScrollView.topAnchor).isActive = true
         merchandiseCollectionView.leftAnchor.constraint(equalTo: mainScrollView.leftAnchor, constant: UIScreen.main.bounds.width * 2).isActive = true
         merchandiseCollectionView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         merchandiseCollectionView.heightAnchor.constraint(equalTo: mainScrollView.heightAnchor).isActive = true
+        
+        merchandiseNoTitleLabel.centerXAnchor.constraint(equalTo: merchandiseCollectionView.centerXAnchor).isActive = true
+        merchandiseNoTitleLabel.centerYAnchor.constraint(equalTo: merchandiseCollectionView.centerYAnchor).isActive = true
 
         missionTableView.topAnchor.constraint(equalTo: mainScrollView.topAnchor).isActive = true
         missionTableView.leftAnchor.constraint(equalTo: mainScrollView.leftAnchor, constant: UIScreen.main.bounds.width * 3).isActive = true
         missionTableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         missionTableView.heightAnchor.constraint(equalTo: mainScrollView.heightAnchor).isActive = true
+        
+        missionNoTitleLabel.centerXAnchor.constraint(equalTo: missionTableView.centerXAnchor).isActive = true
+        missionNoTitleLabel.centerYAnchor.constraint(equalTo: missionTableView.centerYAnchor).isActive = true
         
         var localTimeZoneIdentifier: String {
             return TimeZone.current.identifier
@@ -438,6 +494,10 @@ class HomeViewController: UIViewController {
         }
         self.present(messageComposeVC, animated: true) {
         }
+    }
+    
+    @objc func applicationDidBecomeActive(_ notification: NSNotification) {
+        fetchBadges()
     }
 
 }
@@ -507,18 +567,37 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (tableView == couponTableView) {
+            if (coupons.count > 0) {
+                couponNoTitleLabel.isHidden = true
+            }
+            else {
+                couponNoTitleLabel.isHidden = false
+            }
             return coupons.count
         }
         else if (tableView == missionTableView) {
+            if (missions.count > 0) {
+                missionNoTitleLabel.isHidden = true
+            }
+            else {
+                missionNoTitleLabel.isHidden = false
+            }
             return missions.count
         }
         else if (tableView == rewardCardTableView) {
+            if (rewardCards.count > 0) {
+                rewardCardNoTitleLabel.isHidden = true
+            }
+            else {
+                rewardCardNoTitleLabel.isHidden = false
+            }
             return rewardCards.count
         }
         else {
             return 0
         }
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if (tableView == couponTableView) {
             let cell = tableView.dequeueReusableCell(withIdentifier: "coupon", for: indexPath) as! CouponCell
@@ -631,12 +710,30 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
 
         }
     }
+    
+    @objc private func fetchBadges() {
+        NetworkManager.fetchBadges() {
+            DispatchQueue.main.async {
+                print(BADGES)
+                BADGE_MESSAGE = BADGES[0]
+                
+                UIApplication.shared.applicationIconBadgeNumber = BADGE_MESSAGE
 
+                NotificationCenter.default.post(name: Notification.Name("setMessageBadge"), object: nil, userInfo: nil)
+            }
+        }
+    }
 }
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if (merchandises.count > 0) {
+            merchandiseNoTitleLabel.isHidden = false
+        }
+        else {
+            merchandiseNoTitleLabel.isHidden = true
+        }
         return merchandises.count;
     }
     

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>532292929872-8bcja8rs3piol57fkorrnr1ci7le8aqj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.532292929872-8bcja8rs3piol57fkorrnr1ci7le8aqj</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>532292929872-5ateqqiu0o6tqeke0icerd6gfelqp3i8.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBf5Oet4PsnqLr6LtBHO34BEQE7FSC21S4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>532292929872</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.gps.consumer</string>
+	<key>PROJECT_ID</key>
+	<string>gps-notification-587ba</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gps-notification-587ba.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:532292929872:ios:33720053fb7d0f8b800455</string>
+	<key>DATABASE_URL</key>
+	<string>https://gps-notification-587ba.firebaseio.com</string>
+</dict>
+</plist>
