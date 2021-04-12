@@ -39,6 +39,7 @@ class MessageCell: UITableViewCell {
         textView.textContainerInset = .zero; // fix the silly UITextView bug
         textView.textContainer.lineFragmentPadding = 0; // fix the silly UITextView bug
         textView.textColor = MYTLE
+        textView.dataDetectorTypes = .all
         return textView
     }()
     

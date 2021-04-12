@@ -583,6 +583,7 @@ class RegistrationViewController: UIViewController {
 
     
     @objc private func nextButtonTapped(sender: UIButton!) {
+        self.view.isUserInteractionEnabled = false
         if (sender == next0) {
             let cell0 = accountTableView.cellForRow(at: NSIndexPath(row: 0, section: 0) as IndexPath) as! FormCell
             let cell1 = accountTableView.cellForRow(at: NSIndexPath(row: 1, section: 0) as IndexPath) as! FormCell
@@ -610,7 +611,8 @@ class RegistrationViewController: UIViewController {
                     else {
                         self.account.mobilePhone = cell0.answerField.text!
                         self.account.password = cell1.answerField.text!
-                        self.goToNextPage()
+                        self.goToNextPage(sender: sender)
+                        return
                     }
                 }
             })
@@ -643,11 +645,10 @@ class RegistrationViewController: UIViewController {
                         self.locationManager.startUpdatingLocation()
                     }
                     else {
-                        
                     }
                 }
             }
-            self.goToNextPage()
+            self.goToNextPage(sender: sender)
         }
         else if (sender == next2) {
             // Ask for Authorisation from the User.
@@ -660,7 +661,7 @@ class RegistrationViewController: UIViewController {
             NetworkManager.signUp(parameters: parameters) { (result) in
                 DispatchQueue.main.async {
                     if (result["status"] as! Int == 1) {
-                        self.goToNextPage()
+                        self.goToNextPage(sender: sender)
                     }
                     else if (result["status"] as! Int == -1) {
                         GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
@@ -679,8 +680,8 @@ class RegistrationViewController: UIViewController {
             NetworkManager.activate(parameters: parameters) { (status) in
                 DispatchQueue.main.async {
                     if (status == 1) {
-                        self.goToNextPage()
-                        
+                        self.goToNextPage(sender: sender)
+
 //                        let uuid = UUID().uuidString
 //                        let parameters: [String: Any] = [
 //                            "deviceId" : uuid,
@@ -698,7 +699,7 @@ class RegistrationViewController: UIViewController {
                     }
 
                     else {
-                            GlobalVariables.showAlert(title: self.title, message: ERR_ACTIVATING_ACCOUNT, vc: self)
+                        GlobalVariables.showAlert(title: self.title, message: ERR_ACTIVATING_ACCOUNT, vc: self)
                     }
                 }
             }
@@ -707,7 +708,7 @@ class RegistrationViewController: UIViewController {
 
     }
     
-    private func goToNextPage() {
+    private func goToNextPage(sender: UIButton!) {
         let newX = self.mainScrollView.contentOffset.x + UIScreen.main.bounds.width
         self.mainScrollView.setContentOffset(CGPoint(x: newX, y: 0), animated: true)
         self.currentPage += 1
@@ -721,7 +722,6 @@ class RegistrationViewController: UIViewController {
         currentPage -= 1
         stepLabel.text = steps[currentPage]
         pageControl.currentPage = currentPage
-
     }
     
     @objc private func resendButtonTapped(sender: UIButton!) {
@@ -914,6 +914,10 @@ extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         //        print("hehe", scrollView.contentOffset.x)
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        self.view.isUserInteractionEnabled = true
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

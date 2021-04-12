@@ -11,8 +11,8 @@ import UIKit
 
 
 class AccountDetailViewController: UIViewController {
-    var id : Int?
-    var consumer = Consumer.init(id: 0, name: "", mobilePhone: "", homePhone: "", dateOfBirth: "", serialNumber: "", email: "", address: "", gender: 0, storeId: 0, tags: [])
+//    var id : Int?
+    var consumer = Consumer.init(id: 0, name: "", mobilePhone: "", homePhone: "", dateOfBirth: nil, serialNumber: "", email: "", address: "", gender: 0, storeId: 0, tags: [])
 
     lazy var infoTableView : UITableView = {
         var tableView = UITableView()
@@ -100,15 +100,17 @@ class AccountDetailViewController: UIViewController {
     }
     
     private func setupLayout() {
-                if let id = id {
+//                if let id = id {
                     NetworkManager.fetchConsumer() { (fetchedConsumer) in
+                        print("no such consumer", fetchedConsumer)
                         self.consumer = fetchedConsumer
                         DispatchQueue.main.async {
                             self.infoTableView.reloadData()
+                            print("1111")
                         }
                     }
 //                    self.consumer = Consumer.init(id: id, name: "王大寶", mobilePhone: "0923233344", homePhone: "", dateOfBirth: "1970年1月1日", serialNumber: "A129233444", email: "abc@123.com", address: "台北市大同區", gender: 1, storeId: 1, tags: ["心臟病", "高血壓", "中風"])
-                }
+//                }
 
         infoTableView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         infoTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -143,6 +145,8 @@ class AccountDetailViewController: UIViewController {
         let cell6 = infoTableView.cellForRow(at: NSIndexPath(row: 6, section: 0) as IndexPath) as! FormCell
 
         consumer.dateOfBirth = cell1.answer
+        
+        print("dateOfBirth", consumer.dateOfBirth!)
         
         let parameters: [String: Any] = [
             "name": cell0.answerField.text!,
@@ -193,10 +197,13 @@ class AccountDetailViewController: UIViewController {
 extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("2222")
         return 9
 
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("3333 ", consumer)
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "form", for: indexPath) as! FormCell
         cell.selectionStyle = .none
 //        cell.answerField.delegate = self
@@ -224,10 +231,12 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 cell.field = "手機號碼："
                 cell.answer = consumer.mobilePhone
                 cell.fieldType = FieldType.DisplayOnly
+                break
             case 4:
                 cell.field = "市話："
                 cell.answer = consumer.homePhone
                 cell.fieldType = FieldType.Text
+                break
             case 5:
                 cell.field = "電子郵件："
                 cell.placeholder = "請填寫電子郵件"
@@ -256,8 +265,10 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
             case 8:
                 cell.field = "更改密碼"
                 cell.fieldType = FieldType.Navigate
+                break
             default:
                 cell.field = ""
+                break
         }
         cell.layoutSubviews()
         return cell
@@ -304,6 +315,21 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 break
             }
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if #available(iOS 14, *) {
+            return 50
+        }
+        else {
+            switch indexPath.row {
+                case 1:
+                    return 180
+                default:
+                    return 50
+            }
+        }
+    }
 
 }
 
@@ -338,6 +364,7 @@ extension AccountDetailViewController: UIPickerViewDataSource, UIPickerViewDeleg
             cell7.answer = "女性"
         }
         consumer.gender = row+1
+        print("pickerView didSelectRow")
         cell7.layoutSubviews()
         self.view.endEditing(true)
     }

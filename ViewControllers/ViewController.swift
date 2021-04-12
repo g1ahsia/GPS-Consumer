@@ -21,6 +21,19 @@ class ViewController: UIViewController {
         
 
     }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .light {
+                return .darkContent
+            } else {
+                return .darkContent
+            }
+        } else {
+            return .lightContent
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         

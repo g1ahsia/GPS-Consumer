@@ -181,6 +181,7 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
+
         if (self.missionTableView.indexPathForSelectedRow != nil) {
             self.missionTableView.deselectRow(at: self.missionTableView.indexPathForSelectedRow!, animated: true)
         }
@@ -218,14 +219,24 @@ class HomeViewController: UIViewController {
                 self.missionTableView.reloadData()
             }
         }
-
-
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .light {
+                return .darkContent
+            } else {
+                return .lightContent
+            }
+        } else {
+            return .lightContent
+        }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = SNOW
-        
+                
         var image = UIImage(#imageLiteral(resourceName: "ic_fill_add"))
         image = image.withRenderingMode(.alwaysOriginal)
         let add = UIBarButtonItem(image: image, style: .done, target: self, action: #selector(self.prescriptionButtonTapped)) //
@@ -729,10 +740,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if (merchandises.count > 0) {
-            merchandiseNoTitleLabel.isHidden = false
+            merchandiseNoTitleLabel.isHidden = true
         }
         else {
-            merchandiseNoTitleLabel.isHidden = true
+            merchandiseNoTitleLabel.isHidden = false
         }
         return merchandises.count;
     }

@@ -116,7 +116,7 @@ extension AccountViewController: UITableViewDelegate, UITableViewDataSource, UIS
         switch indexPath.row {
             case 0:
                 let accountDetailVC = AccountDetailViewController()
-                accountDetailVC.id = 1
+//                accountDetailVC.id = 1
                 self.navigationController?.pushViewController(accountDetailVC, animated: true)
 
                 break

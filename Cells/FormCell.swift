@@ -121,12 +121,12 @@ class FormCell: UITableViewCell {
             case FieldType.Date:
                 answerField.isUserInteractionEnabled = false
                 answerField.isHidden = true
-                arrowRight.isHidden = false
+                arrowRight.isHidden = true
                 answerField.inputView = datePicker
                 datePicker.isHidden = false
                 datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
                 print("date of birth", answer)
-                if (answer != "") {
+                if (answer != nil) {
                     datePicker.setDate(from: answer!, format: "yyyy/MM/dd")
                 }
                 break
@@ -149,7 +149,12 @@ class FormCell: UITableViewCell {
         arrowDown.rightAnchor.constraint(equalTo: self.safeAreaLayoutGuide.rightAnchor, constant: -8).isActive = true
 
         datePicker.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        datePicker.leftAnchor.constraint(equalTo: fieldLabel.rightAnchor).isActive = true
+        if #available(iOS 14, *) {
+            datePicker.leftAnchor.constraint(equalTo: fieldLabel.rightAnchor).isActive = true
+        }
+        else {
+            datePicker.leftAnchor.constraint(equalTo: fieldLabel.rightAnchor, constant: -40).isActive = true
+        }
 
     }
     
