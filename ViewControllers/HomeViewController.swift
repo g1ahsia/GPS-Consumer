@@ -495,15 +495,13 @@ class HomeViewController: UIViewController {
     }
     
     @objc private func prescriptionButtonTapped() {
-        let messageComposeVC = MessageComposeViewController()
-        messageComposeVC.messageType = MessageType.Prescription
-        messageComposeVC.role = Role.Consumer
+        let prescriptionVC = PrescriptionViewController()
         if #available(iOS 13.0, *) {
-            messageComposeVC.isModalInPresentation = true
+            prescriptionVC.isModalInPresentation = true
         } else {
             // Fallback on earlier versions
         }
-        self.present(messageComposeVC, animated: true) {
+        self.present(prescriptionVC, animated: true) {
         }
     }
     
@@ -701,7 +699,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource, UIScro
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (scrollView == mainScrollView) {
-                print("hehe", scrollView.contentOffset.x)
+//                print("hehe", scrollView.contentOffset.x)
         }
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {

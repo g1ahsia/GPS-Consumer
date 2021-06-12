@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>zh_tw</string>
 	<key>CFBundleDisplayName</key>
-	<string>好藥坊</string>
+	<string>健康好鄰居</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

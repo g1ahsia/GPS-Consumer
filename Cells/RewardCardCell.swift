@@ -122,7 +122,7 @@ class RewardCardCell: UITableViewCell {
                 inactiveImage = #imageLiteral(resourceName: "rainbow-check-inactive")
                 activeImage = #imageLiteral(resourceName: "rainbow-check-active")
             case 3:
-                mainImage = #imageLiteral(resourceName: "Coupon-Points-Card")
+                mainImage = #imageLiteral(resourceName: "Coupon-Card")
                 inactiveImage = #imageLiteral(resourceName: "present-check-inactive")
                 activeImage = #imageLiteral(resourceName: "present-check-active")
             case 4:

@@ -53,7 +53,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         return textLabel
     }()
 
-
     var send : UIButton = {
         var button =  UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -288,7 +287,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
         self.present(alert, animated: true, completion: {
             print("completion block")
         })
-
     }
     
     @objc private func lineButtonTapped(sender: UIButton!) {
@@ -686,8 +684,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
             self.scrollViewBottomConstraint = contentScrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
             self.scrollViewBottomConstraint?.isActive = true
         }
-
-        
     }
 
     @objc func keyboardWillHide(notification:NSNotification){
