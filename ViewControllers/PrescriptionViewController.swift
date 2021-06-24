@@ -19,6 +19,7 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
     var imageTopConstraints = [NSLayoutConstraint]()
     var attachedImages = [UIImage]()
     var consumer : Consumer?
+    var keyboardHeight = CGFloat(0)
 
     var cancel : UIButton = {
         var button =  UIButton()
@@ -117,7 +118,7 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
     }()
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 7
 
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -128,27 +129,47 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
                 cell.field = "病患姓名："
                 cell.placeholder = "請輸入完整姓名"
                 cell.fieldType = FieldType.Text
-                cell.answer = consumer?.name
+                cell.answer = consumer?.name    
                 cell.answerField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
                 break
             case 1:
-                cell.field = "身分證字號："
-                cell.placeholder = "請輸入生分證字號"
+                cell.field = "病患身分證字號："
+                cell.placeholder = "請輸入身份證字號"
                 cell.fieldType = FieldType.Text
                 cell.answer = consumer?.serialNumber
                 cell.answerField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
                 break
             case 2:
+                cell.field = "病患生日："
+                cell.placeholder = "請輸入生日"
+                cell.fieldType = FieldType.Date
+                cell.answer = consumer?.dateOfBirth
+                cell.answerField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
+                break
+            case 3:
                 cell.field = "領藥人姓名："
                 cell.placeholder = "請輸入完整姓名"
                 cell.fieldType = FieldType.Text
                 cell.answerField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
                 break
-            case 3:
-                cell.field = "領藥人電話："
-                cell.placeholder = "請輸入電話"
+            case 4:
+                cell.field = "領藥人手機："
+                cell.placeholder = "請輸入電話號碼"
                 cell.fieldType = FieldType.Number
                 cell.answerField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
+                break
+            case 5:
+                cell.field = "領藥人市話（選填）："
+                cell.placeholder = "請輸入電話號碼"
+                cell.fieldType = FieldType.Number
+                cell.answerField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
+                break
+            case 6:
+                cell.field = "備註（選填）："
+                cell.placeholder = "請輸入備註"
+                cell.fieldType = FieldType.Number
+                cell.answerField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: .editingChanged)
+                cell.answerField.addTarget(self, action: #selector(self.scrollToCursor(_:)), for: .editingDidBegin)
                 break
             default:
                 cell.field = ""
@@ -162,14 +183,17 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
         enableSendButton()
     }
     
+    @objc func scrollToCursor(_ textField: UITextField) {
+        // TextView
+        contentScrollView.contentOffset = CGPoint(x: 0, y: 200)
+    }
+
     private func setupLayout() {
         
         NetworkManager.fetchConsumer() { (fetchedConsumer) in
-            print("no such consumer", fetchedConsumer)
             self.consumer = fetchedConsumer
             DispatchQueue.main.async {
                 self.infoTableView.reloadData()
-                print("1111")
             }
         }
         cancel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
@@ -184,10 +208,7 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
         send.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         send.widthAnchor.constraint(equalToConstant: 88).isActive = true
         send.heightAnchor.constraint(equalToConstant: 56).isActive = true
-        
-//        attach.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 139).isActive = true
-//        attach.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
-        
+                
         pickupLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         pickupLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 139).isActive = true
         pickupLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
@@ -195,34 +216,35 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
         
         pickerSwitch.leftAnchor.constraint(equalTo: pickupLabel.rightAnchor).isActive = true
         pickerSwitch.centerYAnchor.constraint(equalTo: pickupLabel.centerYAnchor).isActive = true
-
-        attach.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        attach.topAnchor.constraint(equalTo: infoTableView.bottomAnchor, constant: 30).isActive = true
-        attach.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
-        attach.heightAnchor.constraint(equalToConstant: 44).isActive = true
-
-        contentScrollView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
-        contentScrollView.topAnchor.constraint(equalTo: attach.bottomAnchor, constant: 10).isActive = true
-        contentScrollView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-        contentScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-
+        
         separator.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         separator.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 175).isActive = true
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
         separator.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
         
-        infoTableView.topAnchor.constraint(equalTo: separator.bottomAnchor).isActive = true
+        contentScrollView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 0).isActive = true
+        contentScrollView.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 10).isActive = true
+        contentScrollView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+        contentScrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        
+        infoTableView.topAnchor.constraint(equalTo: contentScrollView.topAnchor).isActive = true
         infoTableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         infoTableView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        infoTableView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        infoTableView.heightAnchor.constraint(equalToConstant: 350).isActive = true
+
+        attach.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        attach.topAnchor.constraint(equalTo: infoTableView.bottomAnchor, constant: 20).isActive = true
+        attach.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        attach.heightAnchor.constraint(equalToConstant: 44).isActive = true
         
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(spinner)
+        spinner.centerXAnchor.constraint(equalTo: send.centerXAnchor).isActive = true
+        spinner.centerYAnchor.constraint(equalTo: send.centerYAnchor).isActive = true
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = SNOW
+        spinner.translatesAutoresizingMaskIntoConstraints = false
         title = "處方箋領藥預約"
         view .addSubview(cancel)
         view .addSubview(header)
@@ -230,29 +252,55 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
         view .addSubview(pickupLabel)
         view .addSubview(pickerSwitch)
         view .addSubview(separator)
-        view .addSubview(infoTableView)
-        view.addSubview(attach)
         view .addSubview(contentScrollView)
+        contentScrollView .addSubview(infoTableView)
+        contentScrollView .addSubview(attach)
+        view .addSubview(spinner)
         setupLayout()
+        hideKeyboardWhenTappedOnView()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name:UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name:UIResponder.keyboardWillHideNotification, object: nil)
     }
     
+    @objc func keyboardWillShow(notification:NSNotification){
+
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            keyboardHeight = keyboardRectangle.height
+            
+            self.scrollViewBottomConstraint?.isActive = false
+            self.scrollViewBottomConstraint = attach.bottomAnchor.constraint(equalTo: contentScrollView.bottomAnchor, constant: -keyboardHeight)
+            self.scrollViewBottomConstraint?.isActive = true
+        }
+    }
+
+    @objc func keyboardWillHide(notification:NSNotification){
+
+//        self.scrollViewBottomConstraint?.isActive = false
+//        self.scrollViewBottomConstraint = attach.bottomAnchor.constraint(equalTo: contentScrollView.bottomAnchor)
+//        self.scrollViewBottomConstraint?.isActive = true
+    }
+    
+
     @objc func switchStateDidChange(_ sender:UISwitch!)
     {
         let cell0 = infoTableView.cellForRow(at: NSIndexPath(row: 0, section: 0) as IndexPath) as! FormCell
-        let cell2 = infoTableView.cellForRow(at: NSIndexPath(row: 2, section: 0) as IndexPath) as! FormCell
         let cell3 = infoTableView.cellForRow(at: NSIndexPath(row: 3, section: 0) as IndexPath) as! FormCell
+        let cell4 = infoTableView.cellForRow(at: NSIndexPath(row: 4, section: 0) as IndexPath) as! FormCell
+        let cell5 = infoTableView.cellForRow(at: NSIndexPath(row: 5, section: 0) as IndexPath) as! FormCell
 
         if (sender.isOn == true){
             print("UISwitch state is now ON")
-            cell2.answer = cell0.answer
-            cell3.answer = consumer?.mobilePhone
-            cell2.setNeedsLayout()
+            cell3.answer = cell0.answer
+            cell4.answer = consumer?.mobilePhone
+            cell5.answer = consumer?.homePhone
             cell3.setNeedsLayout()
+            cell4.setNeedsLayout()
         }
         else{
             print("UISwitch state is now Off")
-            cell2.answer = ""
             cell3.answer = ""
+            cell4.answer = ""
         }
     }
     
@@ -317,7 +365,7 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
         var topConstraint: NSLayoutConstraint?
         
         if (attachedImageViews.count == 0) {
-            topConstraint = imageView.topAnchor.constraint(equalTo: contentScrollView.topAnchor, constant: 30)
+            topConstraint = imageView.topAnchor.constraint(equalTo: attach.bottomAnchor, constant: 30)
         }
         else {
             topConstraint = imageView.topAnchor.constraint(equalTo: attachedImageViews[attachedImageViews.count - 1].bottomAnchor, constant: 30)
@@ -350,7 +398,7 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
             let imageView = attachedImageViews[1]
             var topConstraint = imageTopConstraints[1]
             topConstraint.isActive = false
-            topConstraint = imageView.topAnchor.constraint(equalTo: contentScrollView.topAnchor, constant: 30)
+            topConstraint = imageView.topAnchor.constraint(equalTo: attach.bottomAnchor, constant: 30)
             topConstraint.isActive = true
         }
         else {
@@ -364,7 +412,6 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
         deleteButtons.remove(at: deletedIndex!)
         attachedImageViews.remove(at: deletedIndex!)
         imageTopConstraints.remove(at: deletedIndex!)
-        
         enableSendButton()
     }
 
@@ -372,12 +419,15 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
     func enableSendButton() {
         let cell0 = infoTableView.cellForRow(at: NSIndexPath(row: 0, section: 0) as IndexPath) as! FormCell
         let cell1 = infoTableView.cellForRow(at: NSIndexPath(row: 1, section: 0) as IndexPath) as! FormCell
-        let cell2 = infoTableView.cellForRow(at: NSIndexPath(row: 2, section: 0) as IndexPath) as! FormCell
+        let cell2 = infoTableView.cellForRow(at: NSIndexPath(row: 3, section: 0) as IndexPath) as! FormCell
         let cell3 = infoTableView.cellForRow(at: NSIndexPath(row: 3, section: 0) as IndexPath) as! FormCell
+        let cell4 = infoTableView.cellForRow(at: NSIndexPath(row: 4, section: 0) as IndexPath) as! FormCell
+
         if (!(cell0.answer ?? "").isEmpty &&
             !(cell1.answer ?? "").isEmpty &&
             !(cell2.answer ?? "").isEmpty &&
             !(cell3.answer ?? "").isEmpty &&
+            !(cell4.answer ?? "").isEmpty &&
             attachedImageViews.count > 0) {
             send.alpha = 1.0
             send.isEnabled = true
@@ -394,6 +444,7 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
         sender.isEnabled = false
         sender.alpha = 0.5
         
+        
         ATTACHMENTS = []
         for imageView in attachedImageViews {
             attachedImages.append(imageView.image!)
@@ -406,7 +457,6 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
                 uploadImage(withImage: image, group: myGroup)
             }
             myGroup.notify(queue: .main) {
-                print("Finished all requests.")
                 self.sendMessage()
             }
         }
@@ -420,8 +470,11 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
         let cell1 = infoTableView.cellForRow(at: NSIndexPath(row: 1, section: 0) as IndexPath) as! FormCell
         let cell2 = infoTableView.cellForRow(at: NSIndexPath(row: 2, section: 0) as IndexPath) as! FormCell
         let cell3 = infoTableView.cellForRow(at: NSIndexPath(row: 3, section: 0) as IndexPath) as! FormCell
+        let cell4 = infoTableView.cellForRow(at: NSIndexPath(row: 4, section: 0) as IndexPath) as! FormCell
+        let cell5 = infoTableView.cellForRow(at: NSIndexPath(row: 5, section: 0) as IndexPath) as! FormCell
+        let cell6 = infoTableView.cellForRow(at: NSIndexPath(row: 6, section: 0) as IndexPath) as! FormCell
 
-        NetworkManager.createPrescription(patientName: cell0.answer!, patientSerial: cell1.answer!, recipientName: cell2.answer!, recipientPhone: cell3.answer!, attachments:ATTACHMENTS) { (result) in
+        NetworkManager.createPrescription(patientName: cell0.answer!, patientSerial: cell1.answer!, patientDateOfBirth: cell2.answer!, recipientName: cell3.answer!, recipientMobile: cell4.answer!, recipientHomePhone: cell5.answer!, comment: cell6.answer!, attachments:ATTACHMENTS) { (result) in
             DispatchQueue.main.async {
                 if (result["status"] as! Int == 1) {
                     self.send.isEnabled = true
@@ -440,7 +493,28 @@ class PrescriptionViewController: UIViewController, UITableViewDelegate, UITable
                 self.view.isUserInteractionEnabled = true
             }
         }
+        
+        let parameters: [String: Any] = [
+            "serialNumber": cell1.answerField.text!,
+            "dateOfBirth": cell2.answer!,
+        ]
+        
+        NetworkManager.editInfo(parameters: parameters) { (status) in
+            DispatchQueue.main.async {
+                if (status == 1) {
+//                    self.navigationController?.popToRootViewController(animated: true)
+                }
+                else if (status == -1) {
+                    GlobalVariables.showAlert(title: self.title, message: ERR_CONNECTING, vc: self)
+                }
+                else {
+                    GlobalVariables.showAlert(title: self.title, message: ERR_EDITING_INFO, vc: self)
+                }
+            }
+        }
+
     }
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             addImageToView(image: pickedImage)

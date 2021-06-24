@@ -100,18 +100,14 @@ class AccountDetailViewController: UIViewController {
     }
     
     private func setupLayout() {
-//                if let id = id {
-                    NetworkManager.fetchConsumer() { (fetchedConsumer) in
-                        print("no such consumer", fetchedConsumer)
-                        self.consumer = fetchedConsumer
-                        DispatchQueue.main.async {
-                            self.infoTableView.reloadData()
-                            print("1111")
-                        }
-                    }
-//                    self.consumer = Consumer.init(id: id, name: "王大寶", mobilePhone: "0923233344", homePhone: "", dateOfBirth: "1970年1月1日", serialNumber: "A129233444", email: "abc@123.com", address: "台北市大同區", gender: 1, storeId: 1, tags: ["心臟病", "高血壓", "中風"])
-//                }
-
+        NetworkManager.fetchConsumer() { (fetchedConsumer) in
+            print("no such consumer", fetchedConsumer)
+            self.consumer = fetchedConsumer
+            DispatchQueue.main.async {
+                self.infoTableView.reloadData()
+                print("1111")
+            }
+        }
         infoTableView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         infoTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         infoTableView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
@@ -283,12 +279,6 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
             case 0:
                 break
             case 1:
-//                UIView .animate(withDuration: 0.3) {
-//                    self.blackCover.alpha = 0.5
-////                    self.datePicker.alpha = 1
-//                    self.sexPickerView.alpha = 0
-//                }
-//                self.view.endEditing(true)
                 break
             case 2:
                 break
@@ -298,7 +288,6 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 UIView .animate(withDuration: 0.3) {
                     self.blackCover.alpha = 0.5
                     self.sexPickerView.alpha = 1
-//                    self.datePicker.alpha = 0
                 }
                 self.view.endEditing(true)
                 break
@@ -309,7 +298,6 @@ extension AccountDetailViewController: UITableViewDelegate, UITableViewDataSourc
                 break
             default:
                 UIView .animate(withDuration: 0.3) {
-//                    self.datePicker.alpha = 0
                     self.sexPickerView.alpha = 0
                 }
                 break

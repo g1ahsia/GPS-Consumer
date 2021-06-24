@@ -14,7 +14,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
     var role : Role?
     var consumer : Consumer?
     var threadId : Int?
-    var thread = Thread.init(id: 0, type: 0, isRead: 0, sender: "", message: "", updatedDate: "", consumerId: 0)
+    var thread = Thread.init(id: 0, type: 1, isRead: 0, sender: "", message: "", updatedDate: "", consumerId: 0)
     var attachedImages = [UIImage]()
     var spinner = UIActivityIndicatorView(style: .gray)
     
@@ -459,13 +459,7 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
             }
             typeSelection.setTitle(MESSAGE_SUBJECTS[selectedRow], for: .normal)
             thread.type = selectedRow + 1
-            
-            if (thread.type == 1) {
-                descPlaceholder.text = "請填寫實際領藥人姓名"
-            }
-            else {
-                descPlaceholder.text = "問題描述..."
-            }
+            descPlaceholder.text = "問題描述..."
         }
         else if (role == Role.MemberStore) {
             let consumerSearchVC = ConsumerSearchViewController()
@@ -504,22 +498,22 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
                 }
                 break
             case MessageType.Prescription:
-                header.text = "新增訊息"
-                if let role = role {
-                    switch role {
-                    case Role.Consumer:
-                        typeSelection.setTitle(MESSAGE_SUBJECTS[0], for: .normal)
-                        typeLabel.isHidden = false
-                        thread.type = 1
-                        descPlaceholder.text = "請填寫實際領藥人姓名"
-
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { // Change `0.05` to the desired number of seconds.
-                            self.attachButtonTapped(sender: self.attach)
-                        }
-                    case Role.MemberStore:
-                        consumerLabel.isHidden = false
-                    }
-                }
+//                header.text = "新增訊息"
+//                if let role = role {
+//                    switch role {
+//                    case Role.Consumer:
+//                        typeSelection.setTitle(MESSAGE_SUBJECTS[0], for: .normal)
+//                        typeLabel.isHidden = false
+//                        thread.type = 1
+//                        descPlaceholder.text = "請填寫實際領藥人姓名"
+//
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { // Change `0.05` to the desired number of seconds.
+//                            self.attachButtonTapped(sender: self.attach)
+//                        }
+//                    case Role.MemberStore:
+//                        consumerLabel.isHidden = false
+//                    }
+//                }
                 break
             case MessageType.ReplyMessage:
                 header.text = "回覆訊息"
@@ -668,14 +662,6 @@ class MessageComposeViewController: UIViewController, UITextViewDelegate {
 
     @objc func keyboardWillShow(notification:NSNotification){
 
-//        print("keyboardWillShow")
-//
-//        let userInfo = notification.userInfo!
-//        var keyboardFrame:CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
-//        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
-//
-//        kbSize = keyboardFrame.size
-        
         if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardRectangle = keyboardFrame.cgRectValue
             keyboardHeight = keyboardRectangle.height
@@ -809,7 +795,7 @@ extension MessageComposeViewController: UIPickerViewDataSource, UIPickerViewDele
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if component == 0 {
-            return MESSAGE_SUBJECTS.count
+            return 4
         }
         return 0
     }
@@ -824,12 +810,12 @@ extension MessageComposeViewController: UIPickerViewDataSource, UIPickerViewDele
         typeSelection.setTitle(MESSAGE_SUBJECTS[row], for: .normal)
         selectedRow = row
         thread.type = selectedRow + 1
-        if (thread.type == 1) {
-            descPlaceholder.text = "請填寫實際領藥人姓名"
-        }
-        else {
+//        if (thread.type == 1) {
+//            descPlaceholder.text = "請填寫實際領藥人姓名"
+//        }
+//        else {
             descPlaceholder.text = "問題描述..."
-        }
+//        }
     }
 
 }
